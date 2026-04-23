@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Printforsider v2 — Movia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --movia: #003865;
+    --movia-light: #e8edf3;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --gray: #6b7280;
+    --gray-100: #f9fafb;
+    --gray-200: #f3f4f6;
+    --border: #e5e7eb;
+    --text: #111827;
+    --radius: 12px;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--gray-200);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    background: var(--movia);
+    color: #fff;
+    padding: 0 2rem;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  }
+  .header-left { display:flex; align-items:center; gap:1rem; }
+  .logo-mark {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--movia);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700;
+    letter-spacing:-0.03em;
+  }
+  h1 { margin:0; font-size:1.05rem; }
+  .subhead { margin-top:2px; font-size:0.76rem; opacity:0.82; }
+  .header-right { display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; justify-content:flex-end; }
+  .tag {
+    display:inline-flex; align-items:center; gap:0.35rem;
+    padding:0.35rem 0.65rem;
+    border-radius:999px;
+    background: rgba(255,255,255,0.16);
+    font-size:0.76rem;
+    font-weight:600;
+  }
+  button {
+    font: inherit;
+    cursor: pointer;
+  }
+  .header-btn {
+    border:1px solid rgba(255,255,255,0.28);
+    background: rgba(255,255,255,0.12);
+    color:#fff;
+    padding:0.5rem 0.9rem;
+    border-radius:8px;
+    display:inline-flex; align-items:center; gap:0.45rem;
+  }
+  .header-btn:hover { background: rgba(255,255,255,0.2); }
+  .main {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  .notice {
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    padding:0.9rem 1rem;
+    margin-bottom:1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    font-size:0.84rem;
+    color: var(--gray);
+  }
+  .notice strong { color: var(--text); }
+  .kpi-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .kpi-card {
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    padding:1rem 1.1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .kpi-label {
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    font-weight:700;
+    color: var(--gray);
+  }
+  .kpi-value {
+    margin-top:0.35rem;
+    font-size:2rem;
+    line-height:1;
+    font-weight:700;
+  }
+  .total { color: var(--movia); }
+  .ready { color: var(--amber); }
+  .printed { color: var(--green); }
+  .remaining { color: var(--blue); }
+  .kpi-sub {
+    margin-top:0.35rem;
+    color: var(--gray);
+    font-size:0.76rem;
+  }
+  .progress {
+    margin-top:0.7rem;
+    height:6px;
+    background: var(--border);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress > span {
+    display:block;
+    height:100%;
+    border-radius:999px;
+  }
+  .progress .amber { background: var(--amber); }
+  .progress .green { background: var(--green); }
+
+  .controls {
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    padding:0.9rem;
+    margin-bottom:1rem;
+    display:flex;
+    gap:0.6rem;
+    flex-wrap:wrap;
+    align-items:center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .filter-btn {
+    border:1.5px solid var(--border);
+    background:#fff;
+    color:var(--gray);
+    padding:0.5rem 0.9rem;
+    border-radius:8px;
+    display:inline-flex; align-items:center; gap:0.45rem;
+    font-size:0.82rem;
+    font-weight:600;
+  }
+  .filter-btn.active {
+    background: var(--movia);
+    border-color: var(--movia);
+    color:#fff;
+  }
+  .filter-btn:hover {
+    border-color: var(--movia);
+    color: var(--movia);
+  }
+  .filter-btn.active:hover { color:#fff; }
+  .badge-count {
+    background: var(--movia-light);
+    color: var(--movia);
+    padding:0 6px;
+    border-radius:999px;
+    font-size:0.72rem;
+    font-weight:700;
+  }
+  .filter-btn.active .badge-count {
+    background: rgba(255,255,255,0.2);
+    color:#fff;
+  }
+  .search-wrap, .sort-wrap {
+    display:flex;
+    align-items:center;
+    gap:0.45rem;
+  }
+  .search-wrap { margin-left:auto; }
+  input[type="search"], select {
+    font: inherit;
+    border:1.5px solid var(--border);
+    background:#fff;
+    color:var(--text);
+    padding:0.55rem 0.8rem;
+    border-radius:8px;
+    min-height:40px;
+  }
+  input[type="search"] { width:220px; }
+  .table-wrap {
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    overflow:hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .table-scroll { overflow:auto; max-height: calc(100vh - 320px); }
+  table {
+    width:100%;
+    border-collapse: collapse;
+    min-width: 1180px;
+    font-size:0.84rem;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--movia);
+    color:#fff;
+    text-align:left;
+    padding:0.8rem 0.9rem;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom:1px solid var(--border);
+  }
+  tbody tr:hover { background: var(--gray-100); }
+  td {
+    padding:0.75rem 0.9rem;
+    vertical-align: top;
+  }
+  td.center, th.center { text-align:center; }
+  .linje-badge {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    background: var(--movia-light);
+    color: var(--movia);
+    font-weight:700;
+    border-radius:8px;
+    padding:0.25rem 0.55rem;
+    white-space: nowrap;
+  }
+  .variant-badge {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width: 20px;
+    height: 20px;
+    border-radius:999px;
+    background:#fff;
+    color:var(--movia);
+    font-size:0.68rem;
+    font-weight:700;
+  }
+  .dir {
+    display:flex;
+    flex-direction:column;
+    gap:0.2rem;
+  }
+  .dir-main { color: var(--text); }
+  .dir-sub {
+    color: var(--gray);
+    font-size: 0.75rem;
+  }
+  .stop-badge {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width: 34px;
+    padding:0.2rem 0.45rem;
+    border-radius:999px;
+    background: var(--gray-100);
+    color: var(--gray);
+    font-weight:700;
+    font-size:0.75rem;
+  }
+  .toggle-btn {
+    width:36px; height:36px;
+    border-radius:10px;
+    border:2px solid var(--border);
+    background:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color: var(--border);
+  }
+  .toggle-btn:hover { border-color: var(--gray); color: var(--gray); }
+  .toggle-btn.checked-amber { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+  .toggle-btn.checked-green { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .status-badge {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:72px;
+    padding:0.28rem 0.6rem;
+    border-radius:999px;
+    font-weight:700;
+    font-size:0.72rem;
+  }
+  .yes-amber { background: var(--amber-light); color: var(--amber); }
+  .yes-green { background: var(--green-light); color: var(--green); }
+  .no { background: var(--gray-100); color: var(--gray); }
+  .muted { color: var(--gray); }
+  .hidden { display:none !important; }
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(18px);
+    background:#111827;
+    color:#fff;
+    padding:0.7rem 1rem;
+    border-radius:10px;
+    font-size:0.82rem;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition: all 0.2s ease;
+    z-index: 100;
+  }
+  #toast.show {
+    opacity:1;
+    transform: translateX(-50%) translateY(0);
+  }
+  @media (max-width: 920px) {
+    header { padding: 1rem; align-items:flex-start; }
+    .main { padding: 1rem; }
+    .search-wrap { margin-left: 0; width: 100%; }
+    input[type="search"] { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="logo-mark">M</div>
+    <div>
+      <h1>Printforsider v2</h1>
+      <div class="subhead">Datadrevet version bygget fra CSV</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="tag" id="data-tag">CSV-kilde · 440 rækker</span>
+    <span class="tag hidden" id="readonly-banner">Skrivebeskyttet</span>
+    <button class="header-btn" id="share-btn" type="button" onclick="shareView()">
+      <span>🔗</span><span>Del view</span>
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="notice">
+    <strong>Kilde:</strong> Oversigt over linjer til print.csv.
+    <strong>Model:</strong> hver CSV-række er én post.
+    <strong>Stabile id'er:</strong> dubletter som 375R, 601A og 640 har egne interne række-id'er.
+    <strong>Stoptal:</strong> tomme felter vises som “—”.
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Rækker i alt</div>
+      <div class="kpi-value total" id="kpi-total">0</div>
+      <div class="kpi-sub">CSV-poster</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Klar til print</div>
+      <div class="kpi-value ready" id="kpi-ready">0</div>
+      <div class="kpi-sub" id="kpi-ready-pct">0%</div>
+      <div class="progress"><span class="amber" id="bar-ready" style="width:0%"></span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Printet</div>
+      <div class="kpi-value printed" id="kpi-printed">0</div>
+      <div class="kpi-sub" id="kpi-printed-pct">0%</div>
+      <div class="progress"><span class="green" id="bar-printed" style="width:0%"></span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Mangler</div>
+      <div class="kpi-value remaining" id="kpi-remaining">0</div>
+      <div class="kpi-sub">ikke printet endnu</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Linjer</div>
+      <div class="kpi-value total" id="kpi-unique-lines">0</div>
+      <div class="kpi-sub">unikke linjenavne</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="filter-btn active" id="filter-all" type="button" onclick="setFilter('all')">Alle <span class="badge-count" id="cnt-all">0</span></button>
+    <button class="filter-btn" id="filter-ready" type="button" onclick="setFilter('ready')">Klar <span class="badge-count" id="cnt-ready">0</span></button>
+    <button class="filter-btn" id="filter-printed" type="button" onclick="setFilter('printed')">Printet <span class="badge-count" id="cnt-printed">0</span></button>
+    <button class="filter-btn" id="filter-pending" type="button" onclick="setFilter('pending')">Mangler <span class="badge-count" id="cnt-pending">0</span></button>
+
+    <div class="sort-wrap">
+      <label class="muted" for="sort">Sortér</label>
+      <select id="sort" onchange="renderRows()">
+        <option value="linje-asc">Linje A-Å</option>
+        <option value="linje-desc">Linje Å-A</option>
+        <option value="ready-desc">Klar først</option>
+        <option value="printed-desc">Printet først</option>
+      </select>
+    </div>
+
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Søg linje eller retning..." oninput="applyFilters()">
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Linje</th>
+            <th>Retning 1</th>
+            <th class="center">Stop 1</th>
+            <th>Retning 2</th>
+            <th class="center">Stop 2</th>
+            <th class="center">Klar til print</th>
+            <th class="center">Printet</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SOURCE_HASH = "5ece5005cd6a";
+const DATA = [{"id":"1A","linje":"1A","variant":null,"retning1":"Avedøre St. - Hellerup St.","retning2":"Hellerup St. - Avedøre St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"2A","linje":"2A","variant":null,"retning1":"Tingbjerg - Refshaleøen","retning2":"Refshaleøen - Tingbjerg","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"4A","linje":"4A","variant":null,"retning1":"Friheden St.- Buddinge St.","retning2":"Buddinge St. - Friheden St","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"5C","linje":"5C","variant":null,"retning1":"Herlev Hospital - Københavns Lufthavn","retning2":"Københavns Lufthavn. - Herlev Hospital","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"6A","linje":"6A","variant":null,"retning1":"Nørreport St. - Buddinge St.","retning2":"Buddinge St. - Nørreport St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"7A","linje":"7A","variant":null,"retning1":"Rødovre st.- Ny Ellebjerg St.","retning2":"Ny Ellebjerg St. - Rødovre st.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"8A","linje":"8A","variant":null,"retning1":"Valby st. - Nordhavn st.","retning2":"Nordhavn st. - Valby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"9A","linje":"9A","variant":null,"retning1":"Operaen - Glostrup st.","retning2":"Glostrup St. - Operaen ","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"10","linje":"10","variant":null,"retning1":"Valbyparken - Ålholm Plads","retning2":"Ålholm Plads - Valbyparken","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"11","linje":"11","variant":null,"retning1":"Cityringen - Island Brygge St.","retning2":"Island Brygge St. - Cityringen","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"12","linje":"12","variant":null,"retning1":"Bellahøj - Østerport St.","retning2":"Østerport St. - Bellahøj","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"13","linje":"13","variant":null,"retning1":"Brønshøj Torv - Valby St.","retning2":"Valby St. - Brønshøj Torv","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"14","linje":"14","variant":null,"retning1":"Nørreport St. - Ny Ellebjerg st.","retning2":"Ny Ellebjerg st. - Nørreport St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"15E","linje":"15E","variant":null,"retning1":"Østerport St. - Dragør Stationsplads","retning2":"Dragør Stationsplads - Østerport St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"17","linje":"17","variant":null,"retning1":"Ved stationen - Høje Taastrup St.","retning2":"Høje Taastrup St. - Ved stationen","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"18","linje":"18","variant":null,"retning1":"Nørreport St. - Emdrup Torv","retning2":"Emdrup Torv - Nørreport St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"21","linje":"21","variant":null,"retning1":"Brønshøj Torv - Ryparken St.","retning2":"Ryparken St. - Brønshøj Torv","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"22","linje":"22","variant":null,"retning1":"Valby st. - Rødovre St.","retning2":"Rødovre St. - Valby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"23","linje":"23","variant":null,"retning1":"Sundbyvester Plads - Ørestad st.","retning2":"Ørestad st. - Sundbyvester Plads","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"24","linje":"24","variant":null,"retning1":"Rødovrehallen - Glostrup St.","retning2":"Glostrup St. - Rødovrehallen ","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"25","linje":"25","variant":null,"retning1":"Hvidovre Hospital - Islev Station","retning2":"Islev Station - Hvidovre Hospital","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"26","linje":"26","variant":null,"retning1":"Valby st. - Hvidovre Hospital","retning2":"Hvidovre Hospital - Valby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"29","linje":"29","variant":null,"retning1":"Hellerup St. - Vangede St.","retning2":"Vangede St. - Hellerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"31","linje":"31","variant":null,"retning1":"Lersø Parkallé - Gammel Strand st.","retning2":"Gammel Strand st. - Lersø Parkallé","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"32","linje":"32","variant":null,"retning1":"Kastrup Lufthavn - Bella Center St.","retning2":"Bella Center St. - Kastrup Lufthavn","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"33","linje":"33","variant":null,"retning1":"Rødovre Centrum - Nørreport St.","retning2":"Nørreport St. - Rødovre Centrum","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"34","linje":"34","variant":null,"retning1":"Brøndbyvester st. - Hvidovre Hospital","retning2":"Hvidovre Hospital - Brøndbyvester st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"35","linje":"35","variant":null,"retning1":"Flintholm St. - Tårnby Torv","retning2":"Tårnby Torv - Flintholm St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"36","linje":"36","variant":null,"retning1":"Nørreport St. - lufthavnen via DR Byen St.","retning2":"Lufthavnen - Nørreport St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"37","linje":"37","variant":null,"retning1":"Nørreport St. - DR Byen St.","retning2":"DR Byen St. - Nørreport St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"38","linje":"38","variant":null,"retning1":"Kløvermarken - Sundbyvester Plads","retning2":"Sundbyvester Plads - Kløvermarken","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"39","linje":"39","variant":null,"retning1":"Sluseholmen - Tårnby Torv","retning2":"Tårnby Torv - Sluseholmen ","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"40E","linje":"40E","variant":null,"retning1":"Ballerup St. - Ørestad St.","retning2":"Ørestad St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"42","linje":"42","variant":null,"retning1":"Køge Nord St. - Roskilde St.","retning2":"Roskilde St. - Køge Nord St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"43","linje":"43","variant":null,"retning1":"Greve St. - Tåstrup St.","retning2":"Tåstrup St. - Greve St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"44","linje":"44","variant":null,"retning1":"Hillerød St. - Frederikssund St.","retning2":"Frederikssund St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"45","linje":"45","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"46","linje":"46","variant":null,"retning1":"Farum St. - Hillerød St.","retning2":"Hillerød St. - Farum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"47","linje":"47","variant":null,"retning1":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"48","linje":"48","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"49","linje":"49","variant":null,"retning1":"Lyngby St. - Farum St.","retning2":"Farum St. - Lyngby St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"50S","linje":"50S","variant":null,"retning1":"Nørreport St. - Ørestad St.","retning2":"Ørestad St. - Nørreport St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"55E","linje":"55E","variant":null,"retning1":"Roskilde St. - Nørreport St.","retning2":"Nørreport St. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"56","linje":"56","variant":null,"retning1":"Hvalsø St. - Roskilde St.","retning2":"Roskilde St. - Hvalsø St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"57","linje":"57","variant":null,"retning1":"Lejre St. - Roskilde St.","retning2":"Roskilde St. - Lejre St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"58","linje":"58","variant":null,"retning1":"Ringsted St. - Roskilde St.","retning2":"Roskilde St. - Ringsted St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"60E","linje":"60E","variant":null,"retning1":"Køge St. - Nørreport St.","retning2":"Nørreport St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"61","linje":"61","variant":null,"retning1":"Haslev St. - Køge St.","retning2":"Køge St. - Haslev St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"62","linje":"62","variant":null,"retning1":"Faxe Ladeplads St. - Køge St.","retning2":"Køge St. - Faxe Ladeplads St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"63","linje":"63","variant":null,"retning1":"Stevns - Køge St.","retning2":"Køge St. - Stevns","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"64","linje":"64","variant":null,"retning1":"Vordingborg St. - Køge St.","retning2":"Køge St. - Vordingborg St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"65","linje":"65","variant":null,"retning1":"Næstved St. - Køge St.","retning2":"Køge St. - Næstved St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"66","linje":"66","variant":null,"retning1":"Sorø St. - Roskilde St.","retning2":"Roskilde St. - Sorø St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"67","linje":"67","variant":null,"retning1":"Slagelse St. - Roskilde St.","retning2":"Roskilde St. - Slagelse St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"80E","linje":"80E","variant":null,"retning1":"Roskilde St. - Nørreport St.","retning2":"Nørreport St. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"81","linje":"81","variant":null,"retning1":"Helsingør St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"83","linje":"83","variant":null,"retning1":"Hillerød St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"84","linje":"84","variant":null,"retning1":"Farum St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Farum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"85E","linje":"85E","variant":null,"retning1":"Helsingør St. - Nørreport St.","retning2":"Nørreport St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"91E","linje":"91E","variant":null,"retning1":"Køge St. - Nørreport St.","retning2":"Nørreport St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"92","linje":"92","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"96N","linje":"96N","variant":null,"retning1":"Helsingør St. - Nørreport St.","retning2":"Nørreport St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"97N","linje":"97N","variant":null,"retning1":"Frederikssund St. - Nørreport St.","retning2":"Nørreport St. - Frederikssund St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"98N","linje":"98N","variant":null,"retning1":"Roskilde St. - Nørreport St.","retning2":"Nørreport St. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"123","linje":"123","variant":null,"retning1":"Greve St. - Roskilde St.","retning2":"Roskilde St. - Greve St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"124","linje":"124","variant":null,"retning1":"Tune - Roskilde St.","retning2":"Roskilde St. - Tune","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"125","linje":"125","variant":null,"retning1":"Vindinge - Roskilde St.","retning2":"Roskilde St. - Vindinge","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"150S","linje":"150S","variant":null,"retning1":"Kokkedal St. - Nørreport St.","retning2":"Nørreport St. - Kokkedal St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"165","linje":"165","variant":null,"retning1":"Herlev Bymidte - Ballerup St.","retning2":"Ballerup St. - Herlev Bymidte","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"166","linje":"166","variant":null,"retning1":"Herlev Bymidte - Gladsaxe Trafikplads","retning2":"Gladsaxe Trafikplads - Herlev Bymidte","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"167","linje":"167","variant":null,"retning1":"Herlev Bymidte - Bagsværd St.","retning2":"Bagsværd St. - Herlev Bymidte","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"168","linje":"168","variant":null,"retning1":"Lyngby st. - Hellerup St.","retning2":"Hellerup St. - Lyngby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"169","linje":"169","variant":null,"retning1":"Budddinge St. - Hellerup St.","retning2":"Hellerup St. - Buddinge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"170","linje":"170","variant":null,"retning1":"Hovedbanegården - Herlev Hospital","retning2":"Herlev Hospital - Hovedbanegården","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"171","linje":"171","variant":null,"retning1":"Rødovre St. - Hovedbanegården","retning2":"Hovedbanegården - Rødovre St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"172","linje":"172","variant":null,"retning1":"Brønshøj Torv - Nørreport St.","retning2":"Nørreport St. - Brønshøj Torv","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"173E","linje":"173E","variant":null,"retning1":"Ballerup St. - Herlev Hospital","retning2":"Herlev Hospital - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"174E","linje":"174E","variant":null,"retning1":"Køge St. - Nørreport St.","retning2":"Nørreport St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"180R","linje":"180R","variant":null,"retning1":"Nivå St. - Kokkedal St.","retning2":"Kokkedal St. - Nivå St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"184","linje":"184","variant":null,"retning1":"Fredensborg st. - Kokkedal st.","retning2":"Kokkedal st. - Fredensborg st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"185","linje":"185","variant":null,"retning1":"Kokkedal st. - Hørsholm Rungsted","retning2":"Hørsholm Rungsted - Kokkedal st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"190","linje":"190","variant":null,"retning1":"Kokkedal St. - Hillerød st.","retning2":"Hillerød St. - Kokkedal St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"191","linje":"191","variant":null,"retning1":"Vallensbæk st. - Glostrup St.","retning2":"Glostrup St. - Vallensbæk st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"192","linje":"192","variant":null,"retning1":"Vallensbæk st. - Brøndbyvester st.","retning2":"Brøndbyvester st. - Vallensbæk st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"193","linje":"193","variant":null,"retning1":"Hvidovre Hospital - Brøndbyvester St.","retning2":"Brøndbyvester St. - Hvidovre Hospital","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"194","linje":"194","variant":null,"retning1":"Brøndbyvester st. - Rødovre st.","retning2":"Rødovre st. - Brøndbyvester st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"195","linje":"195","variant":null,"retning1":"Hvidovre hospital - Brøndbyøster St.","retning2":"Brøndbyøster St. - Hvidovre hospital","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"196","linje":"196","variant":null,"retning1":"Brøndbyvester st. - Avedøre st.","retning2":"Avedøre st. - Brøndbyvester st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"197","linje":"197","variant":null,"retning1":"Rødovre St. - Hellerup st.","retning2":"Hellerup st. - Rødovre St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"198","linje":"198","variant":null,"retning1":"Hellerup st. - Østerport St.","retning2":"Østerport St. - Hellerup st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"199","linje":"199","variant":null,"retning1":"Nørreport St. - Kastrup Lufthavn","retning2":"Kastrup Lufthavn - Nørreport St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"200S","linje":"200S","variant":null,"retning1":"Hvidovre Hospital - Nørreport St.","retning2":"Nørreport St. - Hvidovre Hospital","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"201","linje":"201","variant":null,"retning1":"Albertslund St. - Glostrup St.","retning2":"Glostrup St. - Albertslund St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"202","linje":"202","variant":null,"retning1":"Brøndbyøster St. - Vallensbæk St.","retning2":"Vallensbæk St. - Brøndbyøster St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"203","linje":"203","variant":null,"retning1":"Glostrup St. - Rødovre Centrum","retning2":"Rødovre Centrum - Glostrup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"205","linje":"205","variant":null,"retning1":"Hillerød St. - Fredensborg St.","retning2":"Fredensborg St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"206","linje":"206","variant":null,"retning1":"Hillerød St. - Helsinge St.","retning2":"Helsinge St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"207","linje":"207","variant":null,"retning1":"Hillerød St. - Gilleleje St.","retning2":"Gilleleje St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"208","linje":"208","variant":null,"retning1":"Hillerød St. - Frederiksværk St.","retning2":"Frederiksværk St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"209","linje":"209","variant":null,"retning1":"Frederikssund St. - Hillerød St.","retning2":"Hillerød St. - Frederikssund St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"210","linje":"210","variant":null,"retning1":"Kokkedal St. - Hillerød St.","retning2":"Hillerød St. - Kokkedal St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"211","linje":"211","variant":null,"retning1":"Ballerup St. - Skovlunde St.","retning2":"Skovlunde St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"212","linje":"212","variant":null,"retning1":"Måløv St. - Ballerup St.","retning2":"Ballerup St. - Måløv St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"213","linje":"213","variant":null,"retning1":"Måløv St. - Skovlunde St.","retning2":"Skovlunde St. - Måløv St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"214","linje":"214","variant":null,"retning1":"Herlev St. - Glostrup St.","retning2":"Glostrup St. - Herlev St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"215","linje":"215","variant":null,"retning1":"Herlev st. - Glostrup st.","retning2":"Glostrup st. - Herlev st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"216","linje":"216","variant":null,"retning1":"Ballerup St. - Måløv St.","retning2":"Måløv St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"217","linje":"217","variant":null,"retning1":"Glostrup St. - Rødovre St.","retning2":"Rødovre St. - Glostrup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"218","linje":"218","variant":null,"retning1":"Herlev St. - Buddinge St.","retning2":"Buddinge St. - Herlev St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"219","linje":"219","variant":null,"retning1":"Gladsaxe Trafikplads - Herlev St.","retning2":"Herlev St. - Gladsaxe Trafikplads","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"220","linje":"220","variant":null,"retning1":"Ballerup St. - Høje Taastrup St.","retning2":"Høje Taastrup St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"221","linje":"221","variant":null,"retning1":"Rødovre st. - Brøndbyøster st.","retning2":"Brøndbyøster st. - Rødovre st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"222","linje":"222","variant":null,"retning1":"Avedøre st. - Brøndbyvester st.","retning2":"Brøndbyvester st. - Avedøre st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"223","linje":"223","variant":null,"retning1":"Ballerup St. - Hedehusene St.","retning2":"Hedehusene St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"224","linje":"224","variant":null,"retning1":"Skovlunde St. - Høje Taastrup St.","retning2":"Høje Taastrup St. - Skovlunde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"225","linje":"225","variant":null,"retning1":"Søborg torv - Hellerup St.","retning2":"Hellerup St. - Søborg torv","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"227","linje":"227","variant":null,"retning1":"Gladsaxe Trafikplads - Bagsværd St.","retning2":"Bagsværd St. - Gladsaxe Trafikplads ","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"228","linje":"228","variant":null,"retning1":"Ballerup st. - Buddinge st.","retning2":"Buddinge st. - Ballerup st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"229","linje":"229","variant":null,"retning1":"Gladsaxe Trafikplads - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Gladsaxe Trafikplads","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"230R","linje":"230R","variant":null,"retning1":"Ballerup St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"231R","linje":"231R","variant":null,"retning1":"Bagsværd St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Bagsværd St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"232","linje":"232","variant":null,"retning1":"Bagsværd St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Bagsværd St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"233","linje":"233","variant":null,"retning1":"Holte St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Holte St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"234","linje":"234","variant":null,"retning1":"Birkerød St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Birkerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"235","linje":"235","variant":null,"retning1":"Gladsaxe Trafikplads - Buddinge St.","retning2":"Buddinge St. - Gladsaxe Trafikplads","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"236","linje":"236","variant":null,"retning1":"Gladsaxe Trafikplads - Nærum St.","retning2":"Nærum St. - Gladsaxe Trafikplads","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"237","linje":"237","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"238","linje":"238","variant":null,"retning1":"Hillerød St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"240R","linje":"240R","variant":null,"retning1":"Hillerød St. - Nørreport St.","retning2":"Nørreport St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"241","linje":"241","variant":null,"retning1":"Hillerød St. - Nødebo","retning2":"Nødebo - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"242","linje":"242","variant":null,"retning1":"Hillerød St. - Hillerød Hospital","retning2":"Hillerød Hospital - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"243","linje":"243","variant":null,"retning1":"Hillerød St. - Gørløse","retning2":"Gørløse - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"244","linje":"244","variant":null,"retning1":"Ballerup St. - Hedehusene St.","retning2":"Hedehusene St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"245R","linje":"245R","variant":null,"retning1":"Slangerup St. - Hillerød St.","retning2":"Hillerød St. - Slangerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"246","linje":"246","variant":null,"retning1":"Holte St. - Kokkedal St.","retning2":"Kokkedal St. - Holte St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"247","linje":"247","variant":null,"retning1":"Allerød St. - Hillerød St.","retning2":"Hillerød St. - Allerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"248","linje":"248","variant":null,"retning1":"Holte St. - Vedbæk St.","retning2":"Vedbæk St. - Holte St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"250S","linje":"250S","variant":null,"retning1":"Gladsaxe Trafikplads - Operaen","retning2":"Operaen - Gladsaxe Trafikplads","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"251","linje":"251","variant":null,"retning1":"Ballerup St. - Måløv St.","retning2":"Måløv St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"252","linje":"252","variant":null,"retning1":"Bagsværd St. - Herlev Hospital","retning2":"Herlev Hospital - Bagsværd St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"253","linje":"253","variant":null,"retning1":"Skibby - Frederikssund st.","retning2":"Frederikssund st. - Skibby","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"254","linje":"254","variant":null,"retning1":"Skibby - Jægerspris","retning2":"Jægerspris - Skibby","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"255","linje":"255","variant":null,"retning1":"Køge Nord St. - Roskilde St.","retning2":"Roskilde St. - Køge Nord St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"256","linje":"256","variant":null,"retning1":"Frederiksværk St. - Hillerød St.","retning2":"Hillerød St. - Frederiksværk St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"257","linje":"257","variant":null,"retning1":"Gilleleje St. - Hillerød St.","retning2":"Hillerød St. - Gilleleje St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"260R","linje":"260R","variant":null,"retning1":"Nørreport St. - Frederikssund St.","retning2":"Frederikssund St. - Nørreport St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"261","linje":"261","variant":null,"retning1":"Ballerup St. - Jonstrup","retning2":"Jonstrup - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"262","linje":"262","variant":null,"retning1":"Farum St. - Holte St.","retning2":"Holte St. - Farum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"263","linje":"263","variant":null,"retning1":"Hillerød St. - Ølsted","retning2":"Ølsted - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"264","linje":"264","variant":null,"retning1":"Hillerød St. - Slangerup St.","retning2":"Slangerup St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"265R","linje":"265R","variant":null,"retning1":"Kokkedal St. - Helsingør St.","retning2":"Helsingør St. - Kokkedal St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"266","linje":"266","variant":null,"retning1":"Kokkedal St. - Humlebæk St.","retning2":"Humlebæk St. - Kokkedal St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"267","linje":"267","variant":null,"retning1":"Køge St. - Ringsted St.","retning2":"Ringsted St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"268","linje":"268","variant":null,"retning1":"Kgs. Lyngby St. - Kokkedal St.","retning2":"Kokkedal St. - Kgs. Lyngby St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"269","linje":"269","variant":null,"retning1":"Hillerød St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"270R","linje":"270R","variant":null,"retning1":"Ballerup st. - Herlev hospital","retning2":"Herlev hospital - Ballerup st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"271","linje":"271","variant":null,"retning1":"Herlev St. - Hillerød Hospital","retning2":"Hillerød Hospital - Herlev St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"272","linje":"272","variant":null,"retning1":"Skovlunde St. - Høje Taastrup St.","retning2":"Høje Taastrup St. - Skovlunde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"273","linje":"273","variant":null,"retning1":"Høje Taastrup St. - Brøndby Strand St.","retning2":"Brøndby Strand St. - Høje Taastrup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"274","linje":"274","variant":null,"retning1":"Farum St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Farum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"275","linje":"275","variant":null,"retning1":"Ballerup St. - Kokkedal St.","retning2":"Kokkedal St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"276","linje":"276","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"277","linje":"277","variant":null,"retning1":"Hillerød St. - Roskilde St.","retning2":"Roskilde St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"278","linje":"278","variant":null,"retning1":"Hillerød St. - Humlebæk St.","retning2":"Humlebæk St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"279","linje":"279","variant":null,"retning1":"Hillerød St. - Helsingør St.","retning2":"Helsingør St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"280R","linje":"280R","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"281","linje":"281","variant":null,"retning1":"Hillerød St. - Farum St.","retning2":"Farum St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"282","linje":"282","variant":null,"retning1":"Frederikssund St. - Hillerød St.","retning2":"Hillerød St. - Frederikssund St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"283","linje":"283","variant":null,"retning1":"Farum St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Farum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"284","linje":"284","variant":null,"retning1":"Kokkedal St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Kokkedal St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"285","linje":"285","variant":null,"retning1":"Ballerup St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Ballerup St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"290R","linje":"290R","variant":null,"retning1":"Kokkedal st. - Humlebæk st.","retning2":"Humlebæk st. - Kokkedal st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"300S","linje":"300S","variant":null,"retning1":"Nærum St. - Ishøj St.","retning2":"Ishøj St. - Nærum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"301","linje":"301","variant":null,"retning1":"Hundested St. - Hillerød St.","retning2":"Hillerød St. - Hundested St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"302","linje":"302","variant":null,"retning1":"Frederiksværk st. - Hillerød St.","retning2":"Hillerød St. - Frederiksværk st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"303","linje":"303","variant":null,"retning1":"Jægerspris - Frederikssund St.","retning2":"Frederikssund St. - Jægerspris","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"304","linje":"304","variant":null,"retning1":"Skibby - Frederikssund St.","retning2":"Frederikssund St. - Skibby","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"305","linje":"305","variant":null,"retning1":"Frederikssund St. - Ølstykke St.","retning2":"Ølstykke St. - Frederikssund St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"306","linje":"306","variant":null,"retning1":"Jægerspris - Frederikssund St.","retning2":"Frederikssund St. - Jægerspris","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"307","linje":"307","variant":null,"retning1":"Frederikssund St. - Ølstykke St.","retning2":"Ølstykke St. - Frederikssund St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"308","linje":"308","variant":null,"retning1":"Skibby - Roskilde St.","retning2":"Roskilde St. - Skibby","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"310R","linje":"310R","variant":null,"retning1":"Frederikssund St. - Rådhuspladsen","retning2":"Rådhuspladsen - Frederikssund St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"320R","linje":"320R","variant":null,"retning1":"Roskilde St. - Hillerød St.","retning2":"Hillerød St. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"321","linje":"321","variant":null,"retning1":"Hillerød St. - Frederikssund St.","retning2":"Frederikssund St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"322","linje":"322","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"323","linje":"323","variant":null,"retning1":"Hillerød St. - Farum St.","retning2":"Farum St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"330R","linje":"330R","variant":null,"retning1":"Køge St. - Nørreport St.","retning2":"Nørreport St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"331","linje":"331","variant":null,"retning1":"Frederikssund St. - Hillerød St.","retning2":"Hillerød St. - Frederikssund St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"332","linje":"332","variant":null,"retning1":"Roskilde St. - Køge St.","retning2":"Køge St. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"333","linje":"333","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"334","linje":"334","variant":null,"retning1":"Hillerød St. - Farum St.","retning2":"Farum St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"335","linje":"335","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"336","linje":"336","variant":null,"retning1":"Køge St. - Næstved St.","retning2":"Næstved St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"337","linje":"337","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"338","linje":"338","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"339","linje":"339","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"340R","linje":"340R","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"341","linje":"341","variant":null,"retning1":"Hillerød St. - Frederikssund St.","retning2":"Frederikssund St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"342","linje":"342","variant":null,"retning1":"Roskilde St. - Køge St.","retning2":"Køge St. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"343","linje":"343","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"344","linje":"344","variant":null,"retning1":"Hillerød St. - Farum St.","retning2":"Farum St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"345","linje":"345","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"346","linje":"346","variant":null,"retning1":"Køge St. - Næstved St.","retning2":"Næstved St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"347","linje":"347","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"348","linje":"348","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"349","linje":"349","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"350S","linje":"350S","variant":null,"retning1":"Ballerup st. - Dragør Station","retning2":"Dragør Station - Ballerup st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"353","linje":"353","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"354","linje":"354","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"355","linje":"355","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"356","linje":"356","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"357","linje":"357","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"358","linje":"358","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"359","linje":"359","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"360","linje":"360","variant":null,"retning1":"Roskilde St. - Køge St.","retning2":"Køge St. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"361","linje":"361","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"362","linje":"362","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"363","linje":"363","variant":null,"retning1":"Hillerød St. - Frederikssund St.","retning2":"Frederikssund St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"364","linje":"364","variant":null,"retning1":"Køge St. - Roskilde St.","retning2":"Roskilde St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"365","linje":"365","variant":null,"retning1":"Køge St. - Hillerød St.","retning2":"Hillerød St. - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"366","linje":"366","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"367","linje":"367","variant":null,"retning1":"Hillerød St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"368","linje":"368","variant":null,"retning1":"Helsingør St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"369","linje":"369","variant":null,"retning1":"Hillerød St. - Farum St.","retning2":"Farum St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"370","linje":"370","variant":null,"retning1":"Lyngby st. - Ishøj st.","retning2":"Ishøj st. - Lyngby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"371","linje":"371","variant":null,"retning1":"Farum St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Farum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"372","linje":"372","variant":null,"retning1":"Kokkedal St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Kokkedal St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"373","linje":"373","variant":null,"retning1":"Kgs. Lyngby St. - Helsinge St.","retning2":"Helsinge St. - Kgs. Lyngby St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"374","linje":"374","variant":null,"retning1":"Kgs. Lyngby St. - Hillerød St.","retning2":"Hillerød St. - Kgs. Lyngby St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"375R__1","linje":"375R","variant":1,"retning1":"Hørsholm Hallen - Hillerød St.","retning2":"Hillerød St. - Hørsholm Hallen","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"375R__2","linje":"375R","variant":2,"retning1":"Hørsholm Hallen - Favrholm St.","retning2":"Favrholm St. - Hørsholm Hallen","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"380R","linje":"380R","variant":null,"retning1":"Kgs. Lyngby st. - Nærum st.","retning2":"Nærum st. - Kgs. Lyngby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"381","linje":"381","variant":null,"retning1":"Hørsholm st. - Hillerød St.","retning2":"Hillerød St. - Hørsholm St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"382","linje":"382","variant":null,"retning1":"Nivå St. - Helsingør St.","retning2":"Helsingør St. - Nivå St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"383","linje":"383","variant":null,"retning1":"Hillerød St. - Hørsholm st.","retning2":"Hørsholm st. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"384","linje":"384","variant":null,"retning1":"Hillerød st. - Kokkedal st.","retning2":"Kokkedal st. - Hillerød st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"385","linje":"385","variant":null,"retning1":"Kokkedal st. - Helsinge st.","retning2":"Helsinge st. - Kokkedal st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"386","linje":"386","variant":null,"retning1":"Helsinge st. - Hillerød st.","retning2":"Hillerød st. - Helsinge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"387","linje":"387","variant":null,"retning1":"Nivå st. - Kokkedal st.","retning2":"Kokkedal st. - Nivå st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"388","linje":"388","variant":null,"retning1":"Frederikssund st. - Hillerød St.","retning2":"Hillerød St. - Frederikssund st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"389","linje":"389","variant":null,"retning1":"Farum st. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Farum st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"390R","linje":"390R","variant":null,"retning1":"Køge Nord St. - Lyngby St.","retning2":"Lyngby St. - Køge Nord St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"391","linje":"391","variant":null,"retning1":"Roskilde st. - Køge st.","retning2":"Køge st. - Roskilde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"392","linje":"392","variant":null,"retning1":"Køge st. - Roskilde st.","retning2":"Roskilde st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"393","linje":"393","variant":null,"retning1":"Køge st. - Roskilde st.","retning2":"Roskilde st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"394","linje":"394","variant":null,"retning1":"Hillerød St. - Farum St.","retning2":"Farum St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"395","linje":"395","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"396","linje":"396","variant":null,"retning1":"Køge st. - Næstved st.","retning2":"Næstved st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"397","linje":"397","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"398","linje":"398","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"399","linje":"399","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"400S","linje":"400S","variant":null,"retning1":"Lyngby st. - Ishøj st.","retning2":"Ishøj st. - Lyngby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"401","linje":"401","variant":null,"retning1":"Farum st. - Kgs. Lyngby st.","retning2":"Kgs. Lyngby st. - Farum st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"402","linje":"402","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"403","linje":"403","variant":null,"retning1":"Hillerød st. - Farum st.","retning2":"Farum st. - Hillerød st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"404","linje":"404","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"405","linje":"405","variant":null,"retning1":"Hillerød St. - Kgs. Lyngby St.","retning2":"Kgs. Lyngby St. - Hillerød St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"406","linje":"406","variant":null,"retning1":"Køge st. - Næstved st.","retning2":"Næstved st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"407","linje":"407","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"408","linje":"408","variant":null,"retning1":"Helsingør St. - Hillerød St.","retning2":"Hillerød St. - Helsingør St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"409","linje":"409","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"410R","linje":"410R","variant":null,"retning1":"Ringsted st. - Hillerød st.","retning2":"Hillerød st. - Ringsted st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"412","linje":"412","variant":null,"retning1":"Roskilde st. - Køge st.","retning2":"Køge st. - Roskilde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"413","linje":"413","variant":null,"retning1":"Roskilde St. - Køge st.","retning2":"Køge st. - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"415","linje":"415","variant":null,"retning1":"Lyngby st. - Ishøj st.","retning2":"Ishøj st. - Lyngby st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"420R","linje":"420R","variant":null,"retning1":"Skovlunde st. - Nørreport st.","retning2":"Nørreport st. - Skovlunde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"421","linje":"421","variant":null,"retning1":"Skovlunde st. - Herlev Hospital","retning2":"Herlev Hospital - Skovlunde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"422","linje":"422","variant":null,"retning1":"Skovlunde st. - Ballerup st.","retning2":"Ballerup st. - Skovlunde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"423","linje":"423","variant":null,"retning1":"Skovlunde st. - Høje Taastrup st.","retning2":"Høje Taastrup st. - Skovlunde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"424","linje":"424","variant":null,"retning1":"Skovlunde st. - Herlev Hospital","retning2":"Herlev Hospital - Skovlunde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"425","linje":"425","variant":null,"retning1":"Skovlunde st. - Høje Taastrup st.","retning2":"Høje Taastrup st. - Skovlunde st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"430R","linje":"430R","variant":null,"retning1":"Hillerød st. - Kokkedal st.","retning2":"Kokkedal st. - Hillerød st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"431","linje":"431","variant":null,"retning1":"Kokkedal st. - Hørsholm st.","retning2":"Hørsholm st. - Kokkedal st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"432","linje":"432","variant":null,"retning1":"Hillerød st. - Kokkedal st.","retning2":"Kokkedal st. - Hillerød st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"433","linje":"433","variant":null,"retning1":"Helsinge st. - Hillerød st.","retning2":"Hillerød st. - Helsinge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"434","linje":"434","variant":null,"retning1":"Hørsholm Hallen - Hillerød St.","retning2":"Hillerød St. - Hørsholm Hallen","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"440R","linje":"440R","variant":null,"retning1":"Køge st. - Ballerup st.","retning2":"Ballerup st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"441","linje":"441","variant":null,"retning1":"Køge st. - Roskilde St.","retning2":"Roskilde St. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"442","linje":"442","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"443","linje":"443","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"444","linje":"444","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"445","linje":"445","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"446","linje":"446","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"447","linje":"447","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"448","linje":"448","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"449","linje":"449","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"450R","linje":"450R","variant":null,"retning1":"Køge st. - Hillerød st.","retning2":"Hillerød st. - Køge st.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"460R","linje":"460R","variant":null,"retning1":"Farum St. - Køge St.","retning2":"Køge St. - Farum St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"500S","linje":"500S","variant":null,"retning1":"Ørestad St. - Kokkedal St.","retning2":"Kokkedal St. - Ørestad St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"551E","linje":"551E","variant":null,"retning1":"Roskilde St. - København H","retning2":"København H - Roskilde St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"580E","linje":"580E","variant":null,"retning1":"Køge St. - København H","retning2":"København H - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"590E","linje":"590E","variant":null,"retning1":"Køge St. - København H","retning2":"København H - Køge St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"600S","linje":"600S","variant":null,"retning1":"Hundige St. - Kokkedal St.","retning2":"Kokkedal St. - Hundige St.","stop1":null,"stop2":null,"klar":true,"printet":true},{"id":"601A__1","linje":"601A","variant":1,"retning1":"Kuhlausvej-  - Dyssegårdsvej","retning2":"Dyssegårdsvej - Kuhlausvej","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"601A__2","linje":"601A","variant":2,"retning1":"Holmegaard Værk/Fensmark - Station - Dyssegårdsvej","retning2":"Dyssegårdsvej - Station - Holmegaard Værk/Fensmark","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"602__1","linje":"602","variant":1,"retning1":"Nygårdsvej - Fensmark","retning2":"Fensmark - Nygårdsvej","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"602__2","linje":"602","variant":2,"retning1":"Nygårdsvej - Gymnasium - Station - Enøby","retning2":"Enøby - Station - Gymnasium - Nygårdsvej","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"603","linje":"603","variant":null,"retning1":"Næstved st. - Mogenstrup","retning2":"Mogenstrup - Næstved st.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"604","linje":"604","variant":null,"retning1":"Næstved St. - Fuglebjerg","retning2":"Fuglebjerg - Næstved St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"605","linje":"605","variant":null,"retning1":"Næstved st. - Ringsted st.","retning2":"Ringsted st. - Næstved st.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"606","linje":"606","variant":null,"retning1":"Næstved St. - Rønnede","retning2":"Rønnede - Næstved St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"607","linje":"607","variant":null,"retning1":"Næstved St. - Rønnede","retning2":"Rønnede - Næstved St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"610R","linje":"610R","variant":null,"retning1":"Helsingør St. - København H","retning2":"København H - Helsingør St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"620R__1","linje":"620R","variant":1,"retning1":"Kokkedal st. - København H","retning2":"København H - Kokkedal st.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"620R__2","linje":"620R","variant":2,"retning1":"Kokkedal st. - Rådhuspladsen ","retning2":"Rådhuspladsen - Kokkedal st.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"630R","linje":"630R","variant":null,"retning1":"Farum St. - København H","retning2":"København H - Farum St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"640__1","linje":"640","variant":1,"retning1":"Nivå St. - Kokkedal st.","retning2":"Kokkedal st. - Nivå St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"640__2","linje":"640","variant":2,"retning1":"Humlebæk st. - Kokkedal st.","retning2":"Kokkedal st. - Humlebæk st.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"650R","linje":"650R","variant":null,"retning1":"Hillerød St. - København H","retning2":"København H - Hillerød St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"901A","linje":"901A","variant":null,"retning1":"Cityringen - Nordhavnen","retning2":"Nordhavnen - Cityringen","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"902","linje":"902","variant":null,"retning1":"Kokkedal St. - Kokkedal Nord","retning2":"Kokkedal Nord - Kokkedal St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"903","linje":"903","variant":null,"retning1":"Kokkedal St. - Kokkedal Syd","retning2":"Kokkedal Syd - Kokkedal St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"904","linje":"904","variant":null,"retning1":"Nivå St. - Nivå Nord","retning2":"Nivå Nord - Nivå St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"905","linje":"905","variant":null,"retning1":"Køge Nord St. - Køge Nord Syd","retning2":"Køge Nord Syd - Køge Nord St.","stop1":null,"stop2":null,"klar":false,"printet":false},{"id":"906","linje":"906","variant":null,"retning1":"Hillerød St. - Hillerød Hospital","retning2":"Hillerød Hospital - Hillerød St.","stop1":null,"stop2":null,"klar":false,"printet":false}];
+const STORAGE_KEY = `printforsider_v2_state_${SOURCE_HASH}`;
+let isReadOnly = false;
+let currentFilter = 'all';
+let state = {};
+
+function loadFromHash() {
+  const hash = location.hash;
+  if (!hash.startsWith('#s=')) return false;
+  try {
+    const raw = decodeURIComponent(escape(atob(hash.slice(3))));
+    const parsed = JSON.parse(raw);
+    state = parsed && typeof parsed === 'object' ? parsed : {};
+    isReadOnly = true;
+    return true;
+  } catch (error) {
+    console.warn('Kunne ikke læse share-hash', error);
+    return false;
+  }
+}
+
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = JSON.parse(saved) || {};
+  } catch (error) {
+    console.warn('Kunne ikke læse localStorage', error);
+    state = {};
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn('Kunne ikke gemme state', error);
+  }
+}
+
+function getState(id, fallback) {
+  const existing = state[id];
+  if (existing) return existing;
+  return {
+    klar: !!fallback.klar,
+    printet: !!fallback.printet
+  };
+}
+
+function setState(id, next) {
+  state[id] = next;
+}
+
+function toggle(id, field) {
+  if (isReadOnly) return;
+  const row = DATA.find(item => item.id === id);
+  if (!row) return;
+  const current = { ...getState(id, row) };
+  current[field] = !current[field];
+  if (field === 'printet' && current.printet) current.klar = true;
+  if (field === 'klar' && !current.klar) current.printet = false;
+  setState(id, current);
+  saveState();
+  updateKPI();
+  updateFilterCounts();
+  updateRow(id);
+  applyFilters();
+}
+
+function makeSvgCheck(color) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', color);
+  svg.setAttribute('stroke-width', '2.5');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('width', '16');
+  svg.setAttribute('height', '16');
+  const poly = document.createElementNS(ns, 'polyline');
+  poly.setAttribute('points', '20 6 9 17 4 12');
+  svg.appendChild(poly);
+  return svg;
+}
+
+function makeSvgCircle() {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '1.5');
+  svg.setAttribute('width', '16');
+  svg.setAttribute('height', '16');
+  const circle = document.createElementNS(ns, 'circle');
+  circle.setAttribute('cx', '12');
+  circle.setAttribute('cy', '12');
+  circle.setAttribute('r', '9');
+  svg.appendChild(circle);
+  return svg;
+}
+
+function createToggleBtn(id, field, checked, colorClass) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'toggle-btn' + (checked ? ' ' + colorClass : '');
+  btn.setAttribute('aria-pressed', checked ? 'true' : 'false');
+  btn.onclick = () => toggle(id, field);
+  btn.appendChild(checked ? makeSvgCheck(colorClass === 'checked-amber' ? '#d97706' : '#16a34a') : makeSvgCircle());
+  return btn;
+}
+
+function createStaticBadge(checked, yesText, noText, colorClass) {
+  const span = document.createElement('span');
+  span.className = 'status-badge ' + (checked ? colorClass : 'no');
+  span.textContent = checked ? yesText : noText;
+  return span;
+}
+
+function stopText(value) {
+  return value === null || value === undefined || value === '' ? '—' : String(value);
+}
+
+function buildRow(row) {
+  const current = getState(row.id, row);
+  const tr = document.createElement('tr');
+  tr.dataset.id = row.id;
+  tr.dataset.linje = row.linje;
+  tr.dataset.klar = current.klar ? '1' : '0';
+  tr.dataset.printet = current.printet ? '1' : '0';
+  tr.dataset.search = `${row.linje} ${row.retning1} ${row.retning2}`.toLowerCase();
+
+  const tdLine = document.createElement('td');
+  const badge = document.createElement('span');
+  badge.className = 'linje-badge';
+  badge.textContent = row.linje;
+  if (row.variant) {
+    const v = document.createElement('span');
+    v.className = 'variant-badge';
+    v.textContent = row.variant;
+    badge.appendChild(v);
+  }
+  tdLine.appendChild(badge);
+  tr.appendChild(tdLine);
+
+  const tdR1 = document.createElement('td');
+  tdR1.innerHTML = `<div class="dir"><div class="dir-main">${escapeHtml(row.retning1 || '—')}</div><div class="dir-sub">${row.variant ? 'variant ' + row.variant : 'retning 1'}</div></div>`;
+  tr.appendChild(tdR1);
+
+  const tdS1 = document.createElement('td');
+  tdS1.className = 'center';
+  tdS1.innerHTML = `<span class="stop-badge">${escapeHtml(stopText(row.stop1))}</span>`;
+  tr.appendChild(tdS1);
+
+  const tdR2 = document.createElement('td');
+  tdR2.innerHTML = `<div class="dir"><div class="dir-main">${escapeHtml(row.retning2 || '—')}</div><div class="dir-sub">${row.variant ? 'variant ' + row.variant : 'retning 2'}</div></div>`;
+  tr.appendChild(tdR2);
+
+  const tdS2 = document.createElement('td');
+  tdS2.className = 'center';
+  tdS2.innerHTML = `<span class="stop-badge">${escapeHtml(stopText(row.stop2))}</span>`;
+  tr.appendChild(tdS2);
+
+  const tdK = document.createElement('td');
+  tdK.className = 'center';
+  tdK.appendChild(isReadOnly ? createStaticBadge(current.klar, 'Klar', 'Nej', 'yes-amber') : createToggleBtn(row.id, 'klar', current.klar, 'checked-amber'));
+  tr.appendChild(tdK);
+
+  const tdP = document.createElement('td');
+  tdP.className = 'center';
+  tdP.appendChild(isReadOnly ? createStaticBadge(current.printet, 'Printet', 'Nej', 'yes-green') : createToggleBtn(row.id, 'printet', current.printet, 'checked-green'));
+  tr.appendChild(tdP);
+
+  return tr;
+}
+
+function updateRow(id) {
+  const tr = document.querySelector(`tr[data-id="${cssEscape(id)}"]`);
+  const row = DATA.find(item => item.id === id);
+  if (!tr || !row) return;
+  const current = getState(id, row);
+  tr.dataset.klar = current.klar ? '1' : '0';
+  tr.dataset.printet = current.printet ? '1' : '0';
+  const tds = tr.querySelectorAll('td');
+  const tdK = tds[5];
+  const tdP = tds[6];
+  tdK.replaceChildren(isReadOnly ? createStaticBadge(current.klar, 'Klar', 'Nej', 'yes-amber') : createToggleBtn(id, 'klar', current.klar, 'checked-amber'));
+  tdP.replaceChildren(isReadOnly ? createStaticBadge(current.printet, 'Printet', 'Nej', 'yes-green') : createToggleBtn(id, 'printet', current.printet, 'checked-green'));
+}
+
+function sortRows(rows) {
+  const mode = document.getElementById('sort').value;
+  const collator = new Intl.Collator('da', { numeric: true, sensitivity: 'base' });
+  const enriched = rows.map(row => {
+    const current = getState(row.id, row);
+    return { row, current };
+  });
+  enriched.sort((a, b) => {
+    if (mode === 'ready-desc') {
+      if (a.current.klar !== b.current.klar) return a.current.klar ? -1 : 1;
+      if (a.current.printet !== b.current.printet) return a.current.printet ? -1 : 1;
+    }
+    if (mode === 'printed-desc') {
+      if (a.current.printet !== b.current.printet) return a.current.printet ? -1 : 1;
+      if (a.current.klar !== b.current.klar) return a.current.klar ? -1 : 1;
+    }
+    const lineCmp = collator.compare(a.row.linje, b.row.linje);
+    if (mode === 'linje-desc') {
+      if (lineCmp !== 0) return -lineCmp;
+    } else {
+      if (lineCmp !== 0) return lineCmp;
+    }
+    return (a.row.variant || 0) - (b.row.variant || 0);
+  });
+  return enriched.map(item => item.row);
+}
+
+function updateKPI() {
+  const total = DATA.length;
+  let ready = 0;
+  let printed = 0;
+  for (const row of DATA) {
+    const current = getState(row.id, row);
+    if (current.klar) ready += 1;
+    if (current.printet) printed += 1;
+  }
+  const remaining = total - printed;
+  const uniqueLines = new Set(DATA.map(row => row.linje)).size;
+  const readyPct = total ? Math.round((ready / total) * 100) : 0;
+  const printedPct = total ? Math.round((printed / total) * 100) : 0;
+
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-ready').textContent = ready;
+  document.getElementById('kpi-printed').textContent = printed;
+  document.getElementById('kpi-remaining').textContent = remaining;
+  document.getElementById('kpi-unique-lines').textContent = uniqueLines;
+  document.getElementById('kpi-ready-pct').textContent = `${readyPct}% af rækker`;
+  document.getElementById('kpi-printed-pct').textContent = `${printedPct}% færdige`;
+  document.getElementById('bar-ready').style.width = `${readyPct}%`;
+  document.getElementById('bar-printed').style.width = `${printedPct}%`;
+}
+
+function updateFilterCounts() {
+  let all = DATA.length;
+  let ready = 0;
+  let printed = 0;
+  let pending = 0;
+  for (const row of DATA) {
+    const current = getState(row.id, row);
+    if (current.klar) ready += 1;
+    if (current.printet) printed += 1;
+    if (!current.printet) pending += 1;
+  }
+  document.getElementById('cnt-all').textContent = all;
+  document.getElementById('cnt-ready').textContent = ready;
+  document.getElementById('cnt-printed').textContent = printed;
+  document.getElementById('cnt-pending').textContent = pending;
+}
+
+function setFilter(next) {
+  currentFilter = next;
+  for (const id of ['all','ready','printed','pending']) {
+    document.getElementById('filter-' + id).classList.toggle('active', id === next);
+  }
+  applyFilters();
+}
+
+function applyFilters() {
+  const query = document.getElementById('search').value.trim().toLowerCase();
+  document.querySelectorAll('#tbody tr').forEach(tr => {
+    const klar = tr.dataset.klar === '1';
+    const printet = tr.dataset.printet === '1';
+    const haystack = tr.dataset.search || '';
+    let show = true;
+    if (currentFilter === 'ready' && !klar) show = false;
+    if (currentFilter === 'printed' && !printet) show = false;
+    if (currentFilter === 'pending' && printet) show = false;
+    if (query && !haystack.includes(query)) show = false;
+    tr.classList.toggle('hidden', !show);
+  });
+}
+
+function renderRows() {
+  const tbody = document.getElementById('tbody');
+  tbody.replaceChildren();
+  const sorted = sortRows(DATA);
+  for (const row of sorted) {
+    tbody.appendChild(buildRow(row));
+  }
+  applyFilters();
+}
+
+function shareView() {
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+  const url = location.origin + location.pathname + '#s=' + payload;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('Link kopieret');
+  }).catch(() => {
+    showToast('Kunne ikke kopiere link');
+    console.log(url);
+  });
+}
+
+function showToast(text) {
+  const toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  window.clearTimeout(showToast._timer);
+  showToast._timer = window.setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function cssEscape(value) {
+  if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(value);
+  return String(value).replace(/"/g, '\\"');
+}
+
+function init() {
+  const fromHash = loadFromHash();
+  if (!fromHash) loadFromStorage();
+  renderRows();
+  updateKPI();
+  updateFilterCounts();
+  if (isReadOnly) {
+    document.getElementById('readonly-banner').classList.remove('hidden');
+    document.getElementById('share-btn').classList.add('hidden');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
