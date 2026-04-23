@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Printforsider v3 — Movia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --movia: #003865;
+    --movia-light: #e8edf3;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --blue: #2563eb;
+    --gray: #6b7280;
+    --gray-100: #f9fafb;
+    --gray-200: #f3f4f6;
+    --border: #e5e7eb;
+    --text: #111827;
+    --radius: 12px;
+  }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--gray-200); color: var(--text); min-height: 100vh; }
+  header { background: var(--movia); color: #fff; padding: 0 2rem; min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+  .header-left { display:flex; align-items:center; gap:1rem; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 10px; background: #fff; color: var(--movia); display:flex; align-items:center; justify-content:center; font-weight:700; letter-spacing:-0.03em; }
+  h1 { margin:0; font-size:1.05rem; }
+  .subhead { margin-top:2px; font-size:0.76rem; opacity:0.82; }
+  .header-right { display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; justify-content:flex-end; }
+  .tag { display:inline-flex; align-items:center; gap:0.35rem; padding:0.35rem 0.65rem; border-radius:999px; background: rgba(255,255,255,0.16); font-size:0.76rem; font-weight:600; }
+  button { font: inherit; cursor: pointer; }
+  .header-btn { border:1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.12); color:#fff; padding:0.5rem 0.9rem; border-radius:8px; display:inline-flex; align-items:center; gap:0.45rem; }
+  .header-btn:hover { background: rgba(255,255,255,0.2); }
+  .main { max-width: 1500px; margin: 0 auto; padding: 1.5rem; }
+  .notice { background:#fff; border:1px solid var(--border); border-radius: var(--radius); padding:0.9rem 1rem; margin-bottom:1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); font-size:0.84rem; color: var(--gray); }
+  .notice strong { color: var(--text); }
+  .kpi-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+  .kpi-card { background:#fff; border:1px solid var(--border); border-radius: var(--radius); padding:1rem 1.1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .kpi-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; font-weight:700; color: var(--gray); }
+  .kpi-value { margin-top:0.35rem; font-size:2rem; line-height:1; font-weight:700; }
+  .total { color: var(--movia); } .ready { color: var(--amber); } .printed { color: var(--green); } .remaining { color: var(--blue); }
+  .kpi-sub { margin-top:0.35rem; color: var(--gray); font-size:0.76rem; }
+  .progress { margin-top:0.7rem; height:6px; background: var(--border); border-radius:999px; overflow:hidden; }
+  .progress > span { display:block; height:100%; border-radius:999px; }
+  .progress .amber { background: var(--amber); } .progress .green { background: var(--green); }
+  .controls { background:#fff; border:1px solid var(--border); border-radius: var(--radius); padding:0.9rem; margin-bottom:1rem; display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .filter-btn { border:1.5px solid var(--border); background:#fff; color:var(--gray); padding:0.5rem 0.9rem; border-radius:8px; display:inline-flex; align-items:center; gap:0.45rem; font-size:0.82rem; font-weight:600; }
+  .filter-btn.active { background: var(--movia); border-color: var(--movia); color:#fff; }
+  .filter-btn:hover { border-color: var(--movia); color: var(--movia); }
+  .filter-btn.active:hover { color:#fff; }
+  .badge-count { background: var(--movia-light); color: var(--movia); padding:0 6px; border-radius:999px; font-size:0.72rem; font-weight:700; }
+  .filter-btn.active .badge-count { background: rgba(255,255,255,0.2); color:#fff; }
+  .search-wrap, .sort-wrap { display:flex; align-items:center; gap:0.45rem; }
+  .search-wrap { margin-left:auto; }
+  input[type="search"], select { font: inherit; border:1.5px solid var(--border); background:#fff; color:var(--text); padding:0.55rem 0.8rem; border-radius:8px; min-height:40px; }
+  input[type="search"] { width:220px; }
+  .table-wrap { background:#fff; border:1px solid var(--border); border-radius: var(--radius); overflow:hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .table-scroll { overflow:auto; max-height: calc(100vh - 320px); }
+  table { width:100%; border-collapse: collapse; min-width: 1180px; font-size:0.84rem; }
+  thead th { position: sticky; top: 0; z-index: 1; background: var(--movia); color:#fff; text-align:left; padding:0.8rem 0.9rem; font-size:0.72rem; letter-spacing:0.06em; text-transform: uppercase; white-space: nowrap; }
+  tbody tr { border-bottom:1px solid var(--border); }
+  tbody tr:hover { background: var(--gray-100); }
+  td { padding:0.75rem 0.9rem; vertical-align: top; }
+  td.center, th.center { text-align:center; }
+  .linje-badge { display:inline-flex; align-items:center; gap:0.4rem; background: var(--movia-light); color: var(--movia); font-weight:700; border-radius:8px; padding:0.25rem 0.55rem; white-space: nowrap; }
+  .variant-badge { display:inline-flex; align-items:center; justify-content:center; min-width: 20px; height: 20px; border-radius:999px; background:#fff; color:var(--movia); font-size:0.68rem; font-weight:700; }
+  .dir { display:flex; flex-direction:column; gap:0.2rem; }
+  .dir-main { color: var(--text); }
+  .dir-sub { color: var(--gray); font-size: 0.75rem; }
+  .stop-badge { display:inline-flex; align-items:center; justify-content:center; min-width: 34px; padding:0.2rem 0.45rem; border-radius:999px; background: var(--gray-100); color: var(--gray); font-weight:700; font-size:0.75rem; }
+  .toggle-btn { width:36px; height:36px; border-radius:10px; border:2px solid var(--border); background:#fff; display:inline-flex; align-items:center; justify-content:center; color: var(--border); }
+  .toggle-btn:hover { border-color: var(--gray); color: var(--gray); }
+  .toggle-btn.checked-amber { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+  .toggle-btn.checked-green { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .status-badge { display:inline-flex; align-items:center; justify-content:center; min-width:72px; padding:0.28rem 0.6rem; border-radius:999px; font-weight:700; font-size:0.72rem; }
+  .yes-amber { background: var(--amber-light); color: var(--amber); }
+  .yes-green { background: var(--green-light); color: var(--green); }
+  .no { background: var(--gray-100); color: var(--gray); }
+  .muted { color: var(--gray); }
+  .hidden { display:none !important; }
+  #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(18px); background:#111827; color:#fff; padding:0.7rem 1rem; border-radius:10px; font-size:0.82rem; font-weight:600; opacity:0; pointer-events:none; transition: all 0.2s ease; z-index: 100; }
+  #toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
+  @media (max-width: 920px) { header { padding: 1rem; align-items:flex-start; } .main { padding: 1rem; } .search-wrap { margin-left: 0; width: 100%; } input[type="search"] { width: 100%; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left"><div class="logo-mark">M</div><div><h1>Printforsider v3</h1><div class="subhead">Datadrevet version bygget fra CSV</div></div></div>
+  <div class="header-right"><span class="tag" id="data-tag">CSV-kilde · 440 rækker</span><span class="tag hidden" id="readonly-banner">Skrivebeskyttet</span><button class="header-btn" id="share-btn" type="button" onclick="shareView()"><span>🔗</span><span>Del view</span></button></div>
+</header>
+<div class="main">
+  <div class="notice"><strong>Kilde:</strong> Oversigt over linjer til print.csv. <strong>Model:</strong> hver CSV-række er én post. <strong>Stabile id'er:</strong> dubletter som 375R, 601A og 640 har egne interne række-id'er. <strong>Status:</strong> klar til print og printet er nu uafhængige felter.</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">Rækker i alt</div><div class="kpi-value total" id="kpi-total">0</div><div class="kpi-sub">CSV-poster</div></div>
+    <div class="kpi-card"><div class="kpi-label">Klar til print</div><div class="kpi-value ready" id="kpi-ready">0</div><div class="kpi-sub" id="kpi-ready-pct">0%</div><div class="progress"><span class="amber" id="bar-ready" style="width:0%"></span></div></div>
+    <div class="kpi-card"><div class="kpi-label">Printet</div><div class="kpi-value printed" id="kpi-printed">0</div><div class="kpi-sub" id="kpi-printed-pct">0%</div><div class="progress"><span class="green" id="bar-printed" style="width:0%"></span></div></div>
+    <div class="kpi-card"><div class="kpi-label">Mangler</div><div class="kpi-value remaining" id="kpi-remaining">0</div><div class="kpi-sub">ikke printet endnu</div></div>
+    <div class="kpi-card"><div class="kpi-label">Linjer</div><div class="kpi-value total" id="kpi-unique-lines">0</div><div class="kpi-sub">unikke linjenavne</div></div>
+  </div>
+  <div class="controls">
+    <button class="filter-btn active" id="filter-all" type="button" onclick="setFilter('all')">Alle <span class="badge-count" id="cnt-all">0</span></button>
+    <button class="filter-btn" id="filter-ready" type="button" onclick="setFilter('ready')">Klar <span class="badge-count" id="cnt-ready">0</span></button>
+    <button class="filter-btn" id="filter-printed" type="button" onclick="setFilter('printed')">Printet <span class="badge-count" id="cnt-printed">0</span></button>
+    <button class="filter-btn" id="filter-pending" type="button" onclick="setFilter('pending')">Mangler <span class="badge-count" id="cnt-pending">0</span></button>
+    <div class="sort-wrap"><label class="muted" for="sort">Sortér</label><select id="sort" onchange="renderRows()"><option value="linje-asc">Linje A-Å</option><option value="linje-desc">Linje Å-A</option><option value="ready-desc">Klar først</option><option value="printed-desc">Printet først</option></select></div>
+    <div class="search-wrap"><input type="search" id="search" placeholder="Søg linje eller retning..." oninput="applyFilters()"></div>
+  </div>
+  <div class="table-wrap"><div class="table-scroll"><table><thead><tr><th>Linje</th><th>Retning 1</th><th class="center">Stop 1</th><th>Retning 2</th><th class="center">Stop 2</th><th class="center">Klar til print</th><th class="center">Printet</th></tr></thead><tbody id="tbody"></tbody></table></div></div>
+</div>
+<div id="toast"></div>
+<script>
+const SOURCE_HASH='5ece5005cd6a';
+const DATA=[];
+const STORAGE_KEY=`printforsider_v3_state_${SOURCE_HASH}`;
+let isReadOnly=false; let currentFilter='all'; let state={};
+function loadFromHash(){const hash=location.hash;if(!hash.startsWith('#s='))return false;try{const raw=decodeURIComponent(escape(atob(hash.slice(3))));state=JSON.parse(raw)||{};isReadOnly=true;return true}catch(e){return false}}
+function loadFromStorage(){try{const saved=localStorage.getItem(STORAGE_KEY);if(saved)state=JSON.parse(saved)||{}}catch(e){state={}}}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}}
+function getState(id,fallback){return state[id]||{klar:!!fallback.klar,printet:!!fallback.printet}}
+function setState(id,next){state[id]=next}
+function toggle(id,field){if(isReadOnly)return;const row=DATA.find(item=>item.id===id);if(!row)return;const current={...getState(id,row)};current[field]=!current[field];setState(id,current);saveState();updateKPI();updateFilterCounts();updateRow(id);applyFilters()}
+function makeSvgCheck(color){const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke',color);svg.setAttribute('stroke-width','2.5');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('width','16');svg.setAttribute('height','16');const poly=document.createElementNS(ns,'polyline');poly.setAttribute('points','20 6 9 17 4 12');svg.appendChild(poly);return svg}
+function makeSvgCircle(){const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.5');svg.setAttribute('width','16');svg.setAttribute('height','16');const circle=document.createElementNS(ns,'circle');circle.setAttribute('cx','12');circle.setAttribute('cy','12');circle.setAttribute('r','9');svg.appendChild(circle);return svg}
+function createToggleBtn(id,field,checked,colorClass){const btn=document.createElement('button');btn.type='button';btn.className='toggle-btn'+(checked?' '+colorClass:'');btn.setAttribute('aria-pressed',checked?'true':'false');btn.onclick=()=>toggle(id,field);btn.appendChild(checked?makeSvgCheck(colorClass==='checked-amber'?'#d97706':'#16a34a'):makeSvgCircle());return btn}
+function createStaticBadge(checked,yesText,noText,colorClass){const span=document.createElement('span');span.className='status-badge '+(checked?colorClass:'no');span.textContent=checked?yesText:noText;return span}
+function stopText(value){return value===null||value===undefined||value===''?'—':String(value)}
+function escapeHtml(value){return String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
+function cssEscape(value){if(window.CSS&&typeof window.CSS.escape==='function')return window.CSS.escape(value);return String(value).replace(/"/g,'\\"')}
+function buildRow(row){const current=getState(row.id,row);const tr=document.createElement('tr');tr.dataset.id=row.id;tr.dataset.linje=row.linje;tr.dataset.klar=current.klar?'1':'0';tr.dataset.printet=current.printet?'1':'0';tr.dataset.search=`${row.linje} ${row.retning1} ${row.retning2}`.toLowerCase();const tdLine=document.createElement('td');const badge=document.createElement('span');badge.className='linje-badge';badge.textContent=row.linje;if(row.variant){const v=document.createElement('span');v.className='variant-badge';v.textContent=row.variant;badge.appendChild(v)}tdLine.appendChild(badge);tr.appendChild(tdLine);const tdR1=document.createElement('td');tdR1.innerHTML=`<div class="dir"><div class="dir-main">${escapeHtml(row.retning1||'—')}</div><div class="dir-sub">${row.variant?'variant '+row.variant:'retning 1'}</div></div>`;tr.appendChild(tdR1);const tdS1=document.createElement('td');tdS1.className='center';tdS1.innerHTML=`<span class="stop-badge">${escapeHtml(stopText(row.stop1))}</span>`;tr.appendChild(tdS1);const tdR2=document.createElement('td');tdR2.innerHTML=`<div class="dir"><div class="dir-main">${escapeHtml(row.retning2||'—')}</div><div class="dir-sub">${row.variant?'variant '+row.variant:'retning 2'}</div></div>`;tr.appendChild(tdR2);const tdS2=document.createElement('td');tdS2.className='center';tdS2.innerHTML=`<span class="stop-badge">${escapeHtml(stopText(row.stop2))}</span>`;tr.appendChild(tdS2);const tdK=document.createElement('td');tdK.className='center';tdK.appendChild(isReadOnly?createStaticBadge(current.klar,'Klar','Nej','yes-amber'):createToggleBtn(row.id,'klar',current.klar,'checked-amber'));tr.appendChild(tdK);const tdP=document.createElement('td');tdP.className='center';tdP.appendChild(isReadOnly?createStaticBadge(current.printet,'Printet','Nej','yes-green'):createToggleBtn(row.id,'printet',current.printet,'checked-green'));tr.appendChild(tdP);return tr}
+function updateRow(id){const tr=document.querySelector(`tr[data-id="${cssEscape(id)}"]`);const row=DATA.find(item=>item.id===id);if(!tr||!row)return;const current=getState(id,row);tr.dataset.klar=current.klar?'1':'0';tr.dataset.printet=current.printet?'1':'0';const tds=tr.querySelectorAll('td');tds[5].replaceChildren(isReadOnly?createStaticBadge(current.klar,'Klar','Nej','yes-amber'):createToggleBtn(id,'klar',current.klar,'checked-amber'));tds[6].replaceChildren(isReadOnly?createStaticBadge(current.printet,'Printet','Nej','yes-green'):createToggleBtn(id,'printet',current.printet,'checked-green'))}
+function sortRows(rows){const mode=document.getElementById('sort').value;const collator=new Intl.Collator('da',{numeric:true,sensitivity:'base'});const enriched=rows.map(row=>({row,current:getState(row.id,row)}));enriched.sort((a,b)=>{if(mode==='ready-desc'){if(a.current.klar!==b.current.klar)return a.current.klar?-1:1;if(a.current.printet!==b.current.printet)return a.current.printet?-1:1}if(mode==='printed-desc'){if(a.current.printet!==b.current.printet)return a.current.printet?-1:1;if(a.current.klar!==b.current.klar)return a.current.klar?-1:1}const cmp=collator.compare(a.row.linje,b.row.linje);if(mode==='linje-desc'){if(cmp!==0)return-cmp}else{if(cmp!==0)return cmp}return (a.row.variant||0)-(b.row.variant||0)});return enriched.map(item=>item.row)}
+function updateKPI(){const total=DATA.length;let ready=0,printed=0;for(const row of DATA){const current=getState(row.id,row);if(current.klar)ready++;if(current.printet)printed++}const remaining=total-printed;const uniqueLines=new Set(DATA.map(row=>row.linje)).size;const readyPct=total?Math.round((ready/total)*100):0;const printedPct=total?Math.round((printed/total)*100):0;document.getElementById('kpi-total').textContent=total;document.getElementById('kpi-ready').textContent=ready;document.getElementById('kpi-printed').textContent=printed;document.getElementById('kpi-remaining').textContent=remaining;document.getElementById('kpi-unique-lines').textContent=uniqueLines;document.getElementById('kpi-ready-pct').textContent=`${readyPct}% af rækker`;document.getElementById('kpi-printed-pct').textContent=`${printedPct}% færdige`;document.getElementById('bar-ready').style.width=`${readyPct}%`;document.getElementById('bar-printed').style.width=`${printedPct}%`}
+function updateFilterCounts(){let all=DATA.length,ready=0,printed=0,pending=0;for(const row of DATA){const current=getState(row.id,row);if(current.klar)ready++;if(current.printet)printed++;if(!current.printet)pending++}document.getElementById('cnt-all').textContent=all;document.getElementById('cnt-ready').textContent=ready;document.getElementById('cnt-printed').textContent=printed;document.getElementById('cnt-pending').textContent=pending}
+function setFilter(next){currentFilter=next;for(const id of ['all','ready','printed','pending']){document.getElementById('filter-'+id).classList.toggle('active',id===next)}applyFilters()}
+function applyFilters(){const query=document.getElementById('search').value.trim().toLowerCase();document.querySelectorAll('#tbody tr').forEach(tr=>{const klar=tr.dataset.klar==='1';const printet=tr.dataset.printet==='1';const haystack=tr.dataset.search||'';let show=true;if(currentFilter==='ready'&&!klar)show=false;if(currentFilter==='printed'&&!printet)show=false;if(currentFilter==='pending'&&printet)show=false;if(query&&!haystack.includes(query))show=false;tr.classList.toggle('hidden',!show)})}
+function renderRows(){const tbody=document.getElementById('tbody');tbody.replaceChildren();const sorted=sortRows(DATA);for(const row of sorted){tbody.appendChild(buildRow(row))}applyFilters()}
+function shareView(){const payload=btoa(unescape(encodeURIComponent(JSON.stringify(state))));const url=location.origin+location.pathname+'#s='+payload;navigator.clipboard.writeText(url).then(()=>showToast('Link kopieret')).catch(()=>{showToast('Kunne ikke kopiere link');console.log(url)})}
+function showToast(text){const toast=document.getElementById('toast');toast.textContent=text;toast.classList.add('show');window.clearTimeout(showToast._timer);showToast._timer=window.setTimeout(()=>toast.classList.remove('show'),2400)}
+function init(){const fromHash=loadFromHash();if(!fromHash)loadFromStorage();fetch('./index_v2.html').then(r=>r.text()).then(html=>{const match=html.match(/const DATA = (\[[\s\S]*?\]);/);if(match){window.DATA.splice?.(0);const parsed=Function(`return ${match[1]}`)();DATA.push(...parsed)}renderRows();updateKPI();updateFilterCounts();if(isReadOnly){document.getElementById('readonly-banner').classList.remove('hidden');document.getElementById('share-btn').classList.add('hidden')}})}
+init();
+</script>
+</body>
+</html>
