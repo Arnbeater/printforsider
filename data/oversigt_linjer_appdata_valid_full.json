@@ -2266,22 +2266,11 @@
     "printet": false
   },
   {
-    "id": "375R__1",
+    "id": "375R",
     "linje": "375R",
     "variant": 1,
     "retning1": "Hørsholm Hallen - Hillerød St.",
     "retning2": "Hillerød St. - Hørsholm Hallen",
-    "stop1": null,
-    "stop2": null,
-    "klar": false,
-    "printet": false
-  },
-  {
-    "id": "375R__2",
-    "linje": "375R",
-    "variant": 2,
-    "retning1": "Hørsholm Hallen - Favrholm St.",
-    "retning2": "Favrholm St. - Hørsholm Hallen",
     "stop1": null,
     "stop2": null,
     "klar": false,
