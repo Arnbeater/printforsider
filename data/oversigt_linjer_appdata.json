@@ -1,0 +1,112 @@
+[
+  {
+    "id": "1A",
+    "linje": "1A",
+    "variant": null,
+    "retning1": "Avedøre St. - Hellerup St.",
+    "retning2": "Hellerup St. - Avedøre St.",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "2A",
+    "linje": "2A",
+    "variant": null,
+    "retning1": "Tingbjerg - Refshaleøen",
+    "retning2": "Refshaleøen - Tingbjerg",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "4A",
+    "linje": "4A",
+    "variant": null,
+    "retning1": "Friheden St.- Buddinge St.",
+    "retning2": "Buddinge St. - Friheden St",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "5C",
+    "linje": "5C",
+    "variant": null,
+    "retning1": "Herlev Hospital - Københavns Lufthavn",
+    "retning2": "Københavns Lufthavn. - Herlev Hospital",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "6A",
+    "linje": "6A",
+    "variant": null,
+    "retning1": "Nørreport St. - Buddinge St.",
+    "retning2": "Buddinge St. - Nørreport St.",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "7A",
+    "linje": "7A",
+    "variant": null,
+    "retning1": "Rødovre st.- Ny Ellebjerg St.",
+    "retning2": "Ny Ellebjerg St. - Rødovre st.",
+    "stop1": null,
+    "stop2": null,
+    "klar": false,
+    "printet": false
+  },
+  {
+    "id": "8A",
+    "linje": "8A",
+    "variant": null,
+    "retning1": "Valby st. - Nordhavn st.",
+    "retning2": "Nordhavn st. - Valby st.",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "9A",
+    "linje": "9A",
+    "variant": null,
+    "retning1": "Operaen - Glostrup st.",
+    "retning2": "Glostrup St. - Operaen ",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "10",
+    "linje": "10",
+    "variant": null,
+    "retning1": "Valbyparken - Ålholm Plads",
+    "retning2": "Ålholm Plads - Valbyparken",
+    "stop1": null,
+    "stop2": null,
+    "klar": true,
+    "printet": true
+  },
+  {
+    "id": "11",
+    "linje": "11",
+    "variant": null,
+    "retning1": "Cityringen - Island Brygge St.",
+    "retning2": "Island Brygge St. - Cityringen",
+    "stop1": null,
+    "stop2": null,
+    "klar": false,
+    "printet": false
+  }
+]
