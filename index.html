@@ -4,515 +4,796 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Printforsider — Movia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --movia: #003865;
-    --blue: #2563EB;
-    --blue-light: #EFF6FF;
+    --movia-light: #e8edf3;
     --green: #16a34a;
     --green-light: #dcfce7;
-    --red: #dc2626;
-    --red-light: #fee2e2;
-    --orange: #ea580c;
-    --gray-50: #f8fafc;
-    --gray-100: #f1f5f9;
-    --gray-200: #e2e8f0;
-    --gray-300: #cbd5e1;
-    --gray-500: #64748b;
-    --gray-700: #334155;
-    --gray-900: #0f172a;
-    --text: #1e293b;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --gray: #6b7280;
+    --gray-light: #f9fafb;
+    --border: #e5e7eb;
+    --text: #111827;
     --radius: 10px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
   }
 
-  body { font-family: 'Inter', system-ui, sans-serif; background: var(--gray-50); color: var(--text); min-height: 100vh; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f3f4f6;
+    color: var(--text);
+    min-height: 100vh;
+  }
 
   header {
     background: var(--movia);
-    padding: 0 32px;
-    height: 60px;
+    color: #fff;
+    padding: 0 2rem;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
-  .header-brand { display: flex; align-items: center; gap: 12px; }
-  .logo { width: 36px; height: 36px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; color: var(--movia); }
-  .header-title { color: white; font-size: 1rem; font-weight: 600; }
-  .header-sub { color: rgba(255,255,255,0.5); font-size: 0.78rem; }
-  .header-date { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
 
-  main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+  .header-left { display: flex; align-items: center; gap: 1rem; }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-mark span {
+    color: var(--movia);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.5px;
+  }
+
+  header h1 { font-size: 1rem; font-weight: 600; letter-spacing: 0.01em; }
+  header p { font-size: 0.75rem; opacity: 0.7; margin-top: 1px; }
+
+  .header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+  #readonly-banner {
+    display: none;
+    background: var(--amber);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  #share-btn {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.4rem 0.9rem;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  #share-btn:hover { background: rgba(255,255,255,0.25); }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+  /* KPI cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
 
   .kpi-card {
-    background: white;
+    background: #fff;
     border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--gray-200);
-    transition: box-shadow 0.15s, border-color 0.15s;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  .kpi-card[role="button"] { cursor: pointer; }
-  .kpi-card[role="button"]:hover { box-shadow: var(--shadow-md); border-color: var(--gray-300); }
-  .kpi-card[role="button"]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
-  .kpi-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 8px; }
-  .kpi-value { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-  .kpi-meta { font-size: 0.78rem; color: var(--gray-500); margin-bottom: 12px; }
-  .kpi-bar { height: 4px; background: var(--gray-100); border-radius: 2px; overflow: hidden; }
-  .kpi-bar-fill { height: 100%; border-radius: 2px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+  .kpi-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); margin-bottom: 0.4rem; }
+  .kpi-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+  .kpi-value.total { color: var(--movia); }
+  .kpi-value.ready { color: var(--amber); }
+  .kpi-value.printed { color: var(--green); }
+  .kpi-value.remaining { color: var(--blue); }
 
-  .c-alle .kpi-value { color: var(--movia); }
-  .c-alle .kpi-bar-fill { background: var(--movia); }
-  .c-klar .kpi-value { color: var(--blue); }
-  .c-klar .kpi-bar-fill { background: var(--blue); }
-  .c-printet .kpi-value { color: var(--green); }
-  .c-printet .kpi-bar-fill { background: var(--green); }
-  .c-mangler .kpi-value { color: var(--orange); }
-  .c-mangler .kpi-bar-fill { background: var(--orange); }
+  .kpi-sub { font-size: 0.75rem; color: var(--gray); margin-top: 0.3rem; }
 
-  .panel { background: white; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--gray-200); overflow: hidden; }
+  .progress-bar {
+    height: 5px;
+    background: var(--border);
+    border-radius: 99px;
+    margin-top: 0.75rem;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-fill.amber { background: var(--amber); }
+  .progress-fill.green { background: var(--green); }
 
-  .panel-toolbar {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--gray-100);
+  /* Controls */
+  .controls {
     display: flex;
-    gap: 10px;
     align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
     flex-wrap: wrap;
   }
 
-  .search-wrap { position: relative; }
-  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--gray-500); pointer-events: none; }
-
-  input[type="search"] {
-    padding: 7px 12px 7px 32px;
-    border: 1px solid var(--gray-200);
-    border-radius: 7px;
-    font-size: 0.875rem;
-    font-family: inherit;
-    width: 200px;
-    outline: none;
-    background: var(--gray-50);
-    color: var(--text);
-    transition: border-color 0.15s;
-  }
-  input[type="search"]:focus { border-color: var(--blue); background: white; }
-
-  .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
-
   .filter-btn {
-    padding: 6px 12px;
-    border: 1px solid var(--gray-200);
-    border-radius: 6px;
-    background: var(--gray-50);
+    padding: 0.45rem 1rem;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    background: #fff;
     font-size: 0.8rem;
-    font-family: inherit;
     font-weight: 500;
     cursor: pointer;
-    color: var(--gray-700);
+    color: var(--gray);
+    font-family: inherit;
+    transition: all 0.12s;
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .filter-btn:hover { border-color: var(--movia); color: var(--movia); }
+  .filter-btn.active { background: var(--movia); border-color: var(--movia); color: #fff; }
+
+  .badge-count {
+    background: rgba(255,255,255,0.25);
+    padding: 0 5px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .filter-btn:not(.active) .badge-count { background: var(--movia-light); color: var(--movia); }
+
+  .search-wrap { margin-left: auto; }
+  #search {
+    padding: 0.45rem 0.85rem;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    outline: none;
+    width: 180px;
+    transition: border-color 0.12s;
+  }
+  #search:focus { border-color: var(--movia); }
+
+  /* Table */
+  .table-wrap {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  thead th {
+    background: var(--movia);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+
+  thead th.center { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--gray-light); }
+  tbody tr.hidden { display: none; }
+
+  td { padding: 0.7rem 1rem; vertical-align: middle; }
+  td.center { text-align: center; }
+
+  .linje-badge {
+    display: inline-block;
+    background: var(--movia-light);
+    color: var(--movia);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    min-width: 38px;
+    text-align: center;
+  }
+
+  .stop-count {
+    font-size: 0.78rem;
+    color: var(--gray);
+    font-weight: 500;
+  }
+
+  /* Toggle buttons */
+  .toggle-btn {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.15s;
+    color: var(--border);
+  }
+  .toggle-btn:hover { border-color: var(--gray); color: var(--gray); }
+  .toggle-btn.checked-amber { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+  .toggle-btn.checked-green { background: var(--green-light); border-color: var(--green); color: var(--green); }
+
+  /* Static badges for read-only */
+  .status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .status-badge.yes-amber { background: var(--amber-light); color: var(--amber); }
+  .status-badge.yes-green { background: var(--green-light); color: var(--green); }
+  .status-badge.no { background: var(--border); color: var(--gray); }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #111827;
+    color: #fff;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 200;
     white-space: nowrap;
   }
-  .filter-btn:hover { background: white; border-color: var(--gray-300); }
-  .filter-btn.active { background: var(--movia); color: white; border-color: var(--movia); }
-  .filter-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .panel-stats { margin-left: auto; font-size: 0.8rem; color: var(--gray-500); white-space: nowrap; }
-
-  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-  thead tr { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
-  th { text-align: left; padding: 10px 16px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); white-space: nowrap; }
-  tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--gray-50); }
-  td { padding: 10px 16px; vertical-align: middle; }
-
-  .linje-badge { font-weight: 700; font-size: 0.9rem; color: var(--movia); background: #e8f0f9; padding: 3px 9px; border-radius: 5px; display: inline-block; }
-
-  .ret-navn { color: var(--gray-700); line-height: 1.4; }
-  .ret-stop { font-size: 0.72rem; color: var(--gray-500); display: block; margin-top: 2px; }
-
-  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
-  .badge-ja { background: var(--green-light); color: var(--green); }
-  .badge-nej { background: var(--red-light); color: var(--red); }
-  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block; flex-shrink: 0; }
-
-  .empty-cell { text-align: center; padding: 60px; color: var(--gray-500); font-size: 0.9rem; }
-
-  @media (max-width: 900px) {
-    main { padding: 16px; }
-    header { padding: 0 16px; }
+  @media (max-width: 640px) {
+    .main { padding: 1rem; }
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 500px) {
-    .kpi-grid { gap: 10px; }
-    .kpi-value { font-size: 1.6rem; }
-    input[type="search"] { width: 150px; }
+    .search-wrap { margin-left: 0; width: 100%; }
+    #search { width: 100%; }
+    thead th:nth-child(3), td:nth-child(3) { display: none; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-brand">
-    <div class="logo">M</div>
+  <div class="header-left">
+    <div class="logo-mark"><span>M</span></div>
     <div>
-      <div class="header-title">Printforsider</div>
-      <div class="header-sub">Linjeoversigt</div>
+      <h1>Printforsider</h1>
+      <p>Movia linjeoversigt</p>
     </div>
   </div>
-  <div class="header-date" id="dato"></div>
+  <div class="header-right">
+    <span id="readonly-banner">Skrivebeskyttet</span>
+    <button id="share-btn" onclick="shareView()"></button>
+  </div>
 </header>
 
-<main>
-  <div class="kpi-grid" id="kpiGrid"></div>
-
-  <div class="panel">
-    <div class="panel-toolbar">
-      <div class="search-wrap">
-        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="search" id="search" placeholder="Søg linje..." oninput="render()" aria-label="Søg efter linje">
-      </div>
-      <div class="filter-group" id="filterGroup" role="group" aria-label="Filtrer linjer"></div>
-      <div class="panel-stats" id="stats" aria-live="polite"></div>
+<div class="main">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Linjer i alt</div>
+      <div class="kpi-value total" id="kpi-total">0</div>
+      <div class="kpi-sub">aktive linjer</div>
     </div>
-    <table aria-label="Linjeoversigt">
+    <div class="kpi-card">
+      <div class="kpi-label">Klar til print</div>
+      <div class="kpi-value ready" id="kpi-ready">0</div>
+      <div class="kpi-sub" id="kpi-ready-pct"></div>
+      <div class="progress-bar"><div class="progress-fill amber" id="bar-ready" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Printet</div>
+      <div class="kpi-value printed" id="kpi-printed">0</div>
+      <div class="kpi-sub" id="kpi-printed-pct"></div>
+      <div class="progress-bar"><div class="progress-fill green" id="bar-printed" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Mangler</div>
+      <div class="kpi-value remaining" id="kpi-remaining">0</div>
+      <div class="kpi-sub">ikke printet endnu</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">
+      Alle <span class="badge-count" id="cnt-all">0</span>
+    </button>
+    <button class="filter-btn" id="filter-ready" onclick="setFilter('ready')">
+      Klar til print <span class="badge-count" id="cnt-ready">0</span>
+    </button>
+    <button class="filter-btn" id="filter-printed" onclick="setFilter('printed')">
+      Printet <span class="badge-count" id="cnt-printed">0</span>
+    </button>
+    <button class="filter-btn" id="filter-pending" onclick="setFilter('pending')">
+      Mangler <span class="badge-count" id="cnt-pending">0</span>
+    </button>
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Søg linje..." oninput="applyFilters()">
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
       <thead>
         <tr>
-          <th scope="col">Linje</th>
-          <th scope="col">Retning 1</th>
-          <th scope="col">Retning 2</th>
-          <th scope="col">Klar til print</th>
-          <th scope="col">Printet</th>
+          <th>Linje</th>
+          <th>Retning 1</th>
+          <th>Retning 2</th>
+          <th class="center">Stop</th>
+          <th class="center">Klar til print</th>
+          <th class="center">Printet</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
   </div>
-</main>
+</div>
+
+<div id="toast"></div>
 
 <script>
-const data = [
-  ["1A","Avedøre St. - Hellerup St.","","Hellerup St. - Avedøre St.","","SAND","SAND"],
-  ["2A","Tingbjerg - Refshaleøen","","Refshaleøen - Tingbjerg","","SAND","SAND"],
-  ["4A","Friheden St.- Buddinge St.","","Buddinge St. - Friheden St","","SAND","SAND"],
-  ["5C","Herlev Hospital - Københavns Lufthavn","","Københavns Lufthavn. - Herlev Hospital","","SAND","SAND"],
-  ["6A","Nørreport St. - Buddinge St.","","Buddinge St. - Nørreport St.","","SAND","SAND"],
-  ["7A","Rødovre Nord St. - København H.","","København H. - Rødovre Nord St.","","SAND","SAND"],
-  ["8A","Lergravsparken St. - Valby St.","","Valby St. - Lergravsparken St.","","SAND","SAND"],
-  ["10","Åmarken St. - Brønshøj Torv","","Brønshøj Torv - Åmarken St.","","SAND","SAND"],
-  ["11","Rådhuspladsen - Avedøre St.","","Avedøre St. - Rådhuspladsen","","SAND","SAND"],
-  ["12","Svanemøllen St. - Islev, Viemosevej","","Islev, Viemosevej - Svanemøllen St.","","SAND","SAND"],
-  ["14","Nørreport St. - Ryparken","","Ryparken - Nørreport St.","","SAND","SAND"],
-  ["15E","Rævehøjvej, DTU - Nørreport St.","","Nørreport St. - Rævehøjvej, DTU","","SAND","SAND"],
-  ["17","Vesterport St. - København Syd St.","","København Syd St. - Vesterport St.","","SAND","SAND"],
-  ["18","Valby St. - Emdrup Torv","","Emdrup Torv - Valby St.","","FALSK","FALSK"],
-  ["19","Glostrup St. - Kgs. Enghave","","Kgs. Enghave - Glostrup St.","","SAND","SAND"],
-  ["21","Hellerup St. - Rødovre St.","","Rødovre St. - Hellerup St.","","SAND","SAND"],
-  ["22","Husum Torv - Glostrup St.","","Glostrup St. - Husum Torv","","SAND","SAND"],
-  ["23","Valby St. - Klampenborg St.","","Klampenborg St. - Valby St.","","SAND","SAND"],
-  ["25","Orientkaj St - Oceankaj","","Oceankaj - Orientkaj St","","FALSK","FALSK"],
-  ["26","Bellahøj - Sankt Annæ Plads","","Sankt Annæ Plads - Bellahøj","","SAND","SAND"],
-  ["27","Østerport St.- Færgeterminal Søndre Frihavn","","Færgeterminal Søndre Frihavn - Østerport St.","","SAND","SAND"],
-  ["31","Vanløse, Ålekistevej - Kastrup St.","45","Kastrup St. - Vanløse, Ålekistevej","45","SAND","SAND"],
-  ["32","Kastrup St. - Ørestad St.","20","Ørestad St. - Kastrup St.","22","SAND","SAND"],
-  ["33","Københavns Rådhusplads - Dragør Stationsplads","75","Dragør Stationsplads - Københavns Rådhusplads","73","SAND","SAND"],
-  ["34","Bella Center St. - Nøragersmindevej","26","Nøragersmindevej - Bella Center St.","26","SAND","SAND"],
-  ["35","Sundbyvester Plads - Københavns Lufthavn","30","Københavns Lufthavn - Sundbyvester Plads","31","SAND","SAND"],
-  ["36","Københavns Lufthavn - Nøragersmindevej","25","Nøragersmindevej - Københavns Lufthavn","26","SAND","SAND"],
-  ["37","Vesterport St. - Amagerværket","21","Amagerværket - Vesterport St.","22","SAND","SAND"],
-  ["40E","Skodsborg St. - Høje-Taastrup St.","","Høje-Taastrup St. - Skodsborg St.","","SAND","SAND"],
-  ["55E","Allerød St. - Rødovre Nord St.","","Rødovre Nord St. - Allerød St.","","SAND","SAND"],
-  ["60E","Hillerød St. - Jernaldervejen","","Jernaldervejen - Hillerød St.","","SAND","SAND"],
-  ["65E","Skibby - Hillerød","","Hillerød - Skibby","","SAND","SAND"],
-  ["68","Bella Center St. - Lyngby St.","","Lyngby St. - Bella Center St.","","FALSK","FALSK"],
-  ["70E","Humlebæk St., Vest - Bavarian Nordic","","Bavarian Nordic - Humlebæk St., Vest","","FALSK","FALSK"],
-  ["71","Frederiksberg Rpl. - Danas Pl.- Frederiksberg Rpl.","","","","FALSK","FALSK"],
-  ["72","Frederiksberg Rpl.-Nordens Pl.-Frederiksberg Rpl.","","","","FALSK","FALSK"],
-  ["74","Frb. Rådhus - Frb. Hospital - Frb. Rådhus.","","","","FALSK","FALSK"],
-  ["77","Sundbyvester Plads - Bella Center St.","","Bella Center St. - Sundbyvester Plads","","FALSK","FALSK"],
-  ["78","Femøren St. - DR Byen St.","","DR Byen St. - Femøren St.","","FALSK","FALSK"],
-  ["84","Hillerød St. - Holte St.","","Holte St. - Hillerød St.","","FALSK","FALSK"],
-  ["87","København Syd St. - Solrød Strand St.","","Solrød Strand St. - København Syd St.","","FALSK","FALSK"],
-  ["91N","Hillerød St. - Greve St.","","Greve St. - Hillerød St.","","FALSK","FALSK"],
-  ["93N","Roskilde St. - Rådhuspladsen St.","","Rådhuspladsen St. - Roskilde St.","","FALSK","FALSK"],
-  ["94N","Hillerød St. - Rådhuspladsen St.","","Rådhuspladsen St. - Hillerød St.","","FALSK","FALSK"],
-  ["98N","Roskilde St. - Frederikssund St","","Frederikssund St. - Roskilde St.","","FALSK","FALSK"],
-  ["99N","Køge St. - Hårlev St.","","Hårlev St. - Køge St.","","FALSK","FALSK"],
-  ["101A","Køge Nord St. evt Campus Køge - Hastrup, Fasanvej","","Hastrup, Fasanvej - Køge Nord St.","","FALSK","FALSK"],
-  ["102A","Præstø - Køge St.","","Køge St. - Præstø","","FALSK","FALSK"],
-  ["106","Køge St. - Bornholmerfærgen","","Bornholmerfærgen - Køge St.","","FALSK","FALSK"],
-  ["108","Køge St.- Strøby - Køge St.","","","","FALSK","FALSK"],
-  ["109","Køge St.- Strøby - Køge St.","","","","FALSK","FALSK"],
-  ["111","Spejdernes Lejr, Hedeland - Høje Taastrup St.","","Høje Taastrup St. - Spejdernes Lejr","","FALSK","FALSK"],
-  ["114","Høje-Taastrup Rådhus - Sengeløse","","Sengeløse - Høje-Taastrup Rådhus","","FALSK","FALSK"],
-  ["120","Høje Taastrup St. - Karlslunde St.","","Karlslunde St. - Høje Taastup St.","","FALSK","FALSK"],
-  ["121","Solrød Strand St. - Køge St.","","Køge St. - Solrød Strand St.","","FALSK","FALSK"],
-  ["123","Roskilde St. - Glostrup St.","","Glostrup St. - Roskilde St.","","FALSK","FALSK"],
-  ["127","Ishøj St. - Høje Taastrup St.","","Høje Taastrup St. - Ishøj St.","","FALSK","FALSK"],
-  ["130","Vallensbæk St. - Rødovre Nord St.","","Rødovre Nord St. - Vallensbæk St.","","FALSK","FALSK"],
-  ["131","Tingbjerg - Rødovre St.","","Rødovre St. - Tingbjerg","","FALSK","FALSK"],
-  ["132","Friheden St. - Rødovre Centrum","","Rødovre Centrum - Friheden St.","","FALSK","FALSK"],
-  ["133","Valby St. - Avedøre St.","","Avedøre St. - Valby St.","","FALSK","FALSK"],
-  ["135","Brøndby Strand St. - Brøndbyvester St","","Brøndbyvester St - Brøndby Strand St.","","FALSK","FALSK"],
-  ["141","Glostrup, Ejby St. - Albertslund St.","","Albertslund St. - Glostrup, Ejby St.","","FALSK","FALSK"],
-  ["142","Skovlunde St. - Flintholm St.","","Flintholm St. - Skovlunde St.","","FALSK","FALSK"],
-  ["143","Galgebakken - Vallensbæk St.","","Vallensbæk St. - Galgebakken","","FALSK","FALSK"],
-  ["144","Ballerup St. - Vallensbæk St.","","Vallensbæk St. - Ballerup St.","","FALSK","FALSK"],
-  ["149","Glostrup Nord, Hersted St. - Glostrup St.","","Glostrup St. - Glostrup Nord","","FALSK","FALSK"],
-  ["150S","Kokkedal St. - Nørreport St.","","Nørreport St. - Kokkedal St.","","FALSK","FALSK"],
-  ["151","Værløse St. - Kirke Værløse, Laanshøj","","Kirke Værløse, Laanshøj - Værløse St.","","FALSK","FALSK"],
-  ["152","Måløv St. - Værløse, Ryetvej","","Værløse, Ryetvej - Måløv St.","","FALSK","FALSK"],
-  ["158","Måløv St. - Slangerup Rutebilstation","","Slangerup Rutebilstation - Måløv St.","","FALSK","FALSK"],
-  ["160","Bagsværd St. - Tinghøjvej","","Tinghøjvej (Buddinge) - Bagsværd St.","","FALSK","FALSK"],
-  ["164","Ballerup St. - Oceankaj","","Oceankaj - Ballerup St.","","FALSK","FALSK"],
-  ["165","Herlev St. - Bagsværd St.","","Bagsværd St. - Herlev St.","","FALSK","FALSK"],
-  ["176","Emdrup Torv - Hellerup St.","","Hellerup St. - Emdrup Torv","","FALSK","FALSK"],
-  ["179","Lyngby St. - Skovshoved","","Skovshoved - Lyngby St.","","FALSK","FALSK"],
-  ["184","Vedbæk St. - Nørreport St.","","Nørreport St. - Vedbæk St.","","FALSK","FALSK"],
-  ["185","Nørreport St. - Klampenborg St.","","Klampenborg St. - Nørreport St.","","FALSK","FALSK"],
-  ["191","Lyngby St. - Skodsborg St.","","Skodsborg St. - Lyngby St.","","FALSK","FALSK"],
-  ["200S","Buddinge St. - Friheden St. evt Avedøreholmen","","Avedøreholmen evt Friheden St. - Buddinge St.","","FALSK","FALSK"],
-  ["201A","Svogerslev - Trekroner St.","","Trekroner St. - Svogerslev","","FALSK","FALSK"],
-  ["216","Roskilde St. - Ballerup St.","","Ballerup St. - Roskilde St.","","FALSK","FALSK"],
-  ["230R","Frederikssund St. - Roskilde St.","","Roskilde St. - Frederikssund St.","","FALSK","FALSK"],
-  ["240R","Ringsted St. - Roskilde St.","","Roskilde St. - Ringsted St.","","FALSK","FALSK"],
-  ["245R","Køge St. - Borup St.","","Borup St. - Køge St.","","FALSK","FALSK"],
-  ["250S","Dragør Stationsplads - Bagsværd St.","","Bagsværd St. - Dragør Stationsplads","","FALSK","FALSK"],
-  ["260R","Køge St. - Ringsted St.","","Ringsted St. - Køge St.","","FALSK","FALSK"],
-  ["300S","Lundtofte, Lundtofteparken - Rødovre Nord St.","","Rødovre Nord St. - Lundtofte","","FALSK","FALSK"],
-  ["310R","Frederikssund St. - Farum St.","","Farum St. - Frederikssund St.","","FALSK","FALSK"],
-  ["320R","Helsinge St. - Frederikssund St.","","Frederikssund St. - Helsinge St.","","FALSK","FALSK"],
-  ["325","Frederikssund St. - Hillerød St.","","Hillerød St. - Frederikssund St.","","FALSK","FALSK"],
-  ["326","Hillerød St. - Hundested St.","","Hundested St. - Hillerød St.","","FALSK","FALSK"],
-  ["330R","Rungsted Kyst St. Øst - Allerød","","Allerød - Rungsted Kyst St. Øst","","FALSK","FALSK"],
-  ["335","Hillerød St. - Farum St.","","Farum St. - Hillerød St.","","FALSK","FALSK"],
-  ["337","Hillerød St. - Slangerup Rutebilstation","","Slangerup Rutebilstation - Hillerød St.","","FALSK","FALSK"],
-  ["340","Espergærde St. - Hornbæk St.","","Hornbæk St. - Espergærde St.","","FALSK","FALSK"],
-  ["341","Helsingør St.- Hornbæk St.","","Hornbæk St.- Helsingør St.","","FALSK","FALSK"],
-  ["350S","Ballerup St. - Nørreport St.","","Nørreport St. - Ballerup St.","","FALSK","FALSK"],
-  ["360R","Gilleleje St - Helsinge St.","","Helsinge St. - Gilleleje St.","","FALSK","FALSK"],
-  ["365R","Kokkedal St. - Fredensborg St.","","Fredensborg St. - Kokkedal St.","","FALSK","FALSK"],
-  ["370R","Fredensborg St. - Dageløkkeparken","","Dageløkkeparken - Fredensborg St.","","FALSK","FALSK"],
-  ["375R","Hørsholm Hallen - Hillerød St.","","Hillerød St. - Hørsholm Hallen","","FALSK","FALSK"],
-  ["380R","Helsinge St. - Hillerød St.","","Hillerød St. - Helsinge St.","","FALSK","FALSK"],
-  ["385","Holte St. - Allerød St.","","Allerød St. - Holte St.","","FALSK","FALSK"],
-  ["388","Lyngby St. - Helsingør St.","","Helsingør St. - Lyngby St.","","FALSK","FALSK"],
-  ["390R","Helsingør St. - Helsinge St.","","Helsinge St. - Helsingør St.","","FALSK","FALSK"],
-  ["400S","Lyngby St. - Ishøj St.","","Ishøj St. - Lyngby St.","","FALSK","FALSK"],
-  ["420","Holbæk St. - Slagelse St.","","Slagelse St. - Holbæk St.","","FALSK","FALSK"],
-  ["430R","Kalundborg St. - Slagelse St.","","Slagelse St. - Kalundborg St.","","FALSK","FALSK"],
-  ["440R","Ringsted St. - Haslev St.","","Haslev St. - Ringsted St.","","FALSK","FALSK"],
-  ["460R","Ringsted St. - Slagelse St.","","Slagelse St. - Ringsted St","","FALSK","FALSK"],
-  ["480R","Slagelse St. - Næstved St.","","Næstved St. - Slagelse St.","","FALSK","FALSK"],
-  ["500S","Kokkedal St. - Ørestad St.","","Ørestad St. - Kokkedal St.","","FALSK","FALSK"],
-  ["520","Holbæk St. - Kalundborg St.","","Kalundborg St. - Holbæk St.","","FALSK","FALSK"],
-  ["540","Holbæk St. - Ringsted St.","","Ringsted St. - Holbæk St.","","FALSK","FALSK"],
-  ["560","Nykøbing Sj. St. - Holbæk St.","","Holbæk St. - Nykøbing Sj. St.","","FALSK","FALSK"],
-  ["600S","Hillerød St. - Ishøj St.","","Ishøj St. - Hillerød St.","","FALSK","FALSK"],
-  ["620R","Næstved St. - Præstø","","Præstø - Næstved St.","","FALSK","FALSK"],
-  ["630R","Næstved St. - Faxe Ladeplads","","Faxe Ladeplads - Næstved St.","","FALSK","FALSK"],
-  ["640","Næstved St. - Vordingborg St.","","Vordingborg St. - Næstved St.","","FALSK","FALSK"],
-  ["660R","Vordingborg St. - Stege","","Stege - Vordingborg St.","","FALSK","FALSK"],
-  ["680R","Næstved - Ringsted St.","","Ringsted - Næstved","","FALSK","FALSK"],
-  ["720R","Maribo St. - Rødby Færge","","Rødby Færge - Maribo St.","","FALSK","FALSK"],
-  ["750","Stege - Nykøbing F St.","","Nykøbing F St. - Stege","","FALSK","FALSK"],
-  ["961","Lilla Fribus Slagelse","","Lilla Fribus Slagelse","","FALSK","FALSK"],
-  ["962","Blå Fribus Slagelse","","Blå Fribus Slagelse","","FALSK","FALSK"],
-  ["963","Rød Fribus Slagelse","","Rød Fribus Slagelse","","FALSK","FALSK"],
-  ["970N","Køge St. - Roskilde St.","","Roskilde St. - Køge St.","","FALSK","FALSK"],
-  ["971N","Køge St. - Faxe Ladeplads St.","","Faxe Ladeplads St. - Køge St.","","FALSK","FALSK"],
-  ["972N","Køge St. - Rødvig St.","","Rødvig St. - Køge St.","","FALSK","FALSK"],
-  ["993","Nyhavn - Operaen","","Operaen - Nyhavn","","FALSK","FALSK"],
+const LINES = [
+  ["1A","Ishøj St.","Nørreport St.",54],
+  ["2A","Tingbjerg","Sundby",57],
+  ["3A","Hvidovre Hospital","Brønshøj Torv",47],
+  ["4A","Gladsaxe Trafikplads","Islands Brygge",52],
+  ["5A","Husum Torv","Sundbyvester Plads",50],
+  ["6A","Bella Center","Tingbjerg",43],
+  ["7A","Nørreport St.","Husum Torv",39],
+  ["8A","Herlev Hospital","Valby St.",48],
+  ["9A","Skovlunde","Amager Centret",55],
+  ["10","Frederiksberg","Hvidovre",30],
+  ["12","Glostrup St.","Nørreport St.",44],
+  ["13","Brøndbyøster","Buddinge",35],
+  ["14","Herlev","Vanløse",28],
+  ["15E","Ballerup","Nørreport",36],
+  ["18","Brønshøj","Valby",32],
+  ["20E","Rødovre","Nørreport",29],
+  ["21","Husum","Nørreport",27],
+  ["22","Rødovre","Frederiksberg",26],
+  ["23","Gladsaxe","Nørreport",33],
+  ["24","Greve","Ishøj",22],
+  ["25","Tåstrup","Glostrup",18],
+  ["26","Køge","Greve",24],
+  ["27","Roskilde","Tåstrup",16],
+  ["28","Hedehusene","Roskilde",20],
+  ["29","Lejre","Roskilde",14],
+  ["30","Frederikssund","Hillerød",25],
+  ["31","Helsingør","Hillerød",28],
+  ["32","Hellerup","Lyngby",30],
+  ["33","Kgs.Lyngby","Farum",22],
+  ["34","Birkerød","Hillerød",19],
+  ["35","Fredensborg","Hillerød",17],
+  ["36","Gilleleje","Helsingør",24],
+  ["37","Hundested","Hillerød",30],
+  ["38","Frederiksværk","Hillerød",26],
+  ["39","Tisvildeleje","Hillerød",21],
+  ["40","Ølstykke","Hillerød",18],
+  ["41","Frederikssund","Hillerød",22],
+  ["42","Jægerspris","Frederikssund",15],
+  ["43","Skibby","Frederikssund",12],
+  ["44","Roskilde","Frederikssund",28],
+  ["45","Ballerup","Frederikssund",20],
+  ["46","Måløv","Frederikssund",16],
+  ["47","Hillerød","Frederikssund",24],
+  ["48","Smørum","Ballerup",14],
+  ["49","Ledøje","Ballerup",10],
+  ["50S","Roskilde","Køge",30],
+  ["51","Køge","Greve",18],
+  ["52","Greve","Tåstrup",16],
+  ["53","Tåstrup","Roskilde",22],
+  ["55E","Roskilde","Nørreport",40],
+  ["56","Hvalsø","Roskilde",18],
+  ["57","Lejre","Roskilde",14],
+  ["58","Ringsted","Roskilde",20],
+  ["60E","Køge","Nørreport",36],
+  ["61","Haslev","Køge",22],
+  ["62","Faxe Ladeplads","Køge",20],
+  ["63","Stevns","Køge",18],
+  ["64","Vordingborg","Køge",30],
+  ["65","Næstved","Køge",28],
+  ["66","Sorø","Roskilde",24],
+  ["67","Slagelse","Roskilde",28],
+  ["80E","Roskilde","Nørreport",38],
+  ["81","Helsingør","Kgs.Lyngby",32],
+  ["83","Hillerød","Kgs.Lyngby",28],
+  ["84","Farum","Kgs.Lyngby",24],
+  ["85E","Helsingør","Nørreport",42],
+  ["91E","Køge","Nørreport",38],
+  ["92","Køge","Roskilde",22],
+  ["96N","Helsingør","Nørreport",36],
+  ["97N","Frederikssund","Nørreport",34],
+  ["98N","Roskilde","Nørreport",30],
+  ["123","Greve","Roskilde",16],
+  ["124","Tune","Roskilde",14],
+  ["125","Vindinge","Roskilde",12],
+  ["200S","Hvidovre","Nørreport",44],
+  ["201","Albertslund","Glostrup",18],
+  ["202","Brøndby","Glostrup",16],
+  ["203","Vallensbæk","Glostrup",14],
+  ["211","Ballerup","Glostrup",20],
+  ["215","Herlev","Glostrup",18],
+  ["216","Rødovre","Glostrup",16],
+  ["223","Herlev","Gladsaxe",22],
+  ["224","Skovlunde","Gladsaxe",18],
+  ["225","Søborg","Gladsaxe",16],
+  ["228","Gladsaxe","Lyngby",20],
+  ["230E","Lyngby","Nørreport",28],
+  ["231","Virum","Lyngby",14],
+  ["232","Sorgenfri","Lyngby",12],
+  ["233","Holte","Lyngby",18],
+  ["234","Birkerød","Lyngby",22],
+  ["240E","Hillerød","Nørreport",40],
+  ["250S","Helsingør","Nørreport",48],
+  ["300S","Frederikssund","Nørreport",46],
+  ["303E","Frederikssund","Nørreport",40],
+  ["305","Ølstykke","Frederikssund",12],
+  ["306","Jægerspris","Frederikssund",10],
+  ["320E","Roskilde","Nørreport",38],
+  ["330E","Køge","Nørreport",36],
+  ["350S","Køge","Nørreport",44],
+  ["360","Roskilde","Køge",20],
+  ["370","Roskilde","Næstved",28],
+  ["380","Roskilde","Slagelse",32],
+  ["390R","Ringsted","Roskilde",18],
+  ["400S","Hillerød","Nørreport",46],
+  ["440","Hillerød","Helsingør",30],
+  ["450","Hillerød","Farum",24],
+  ["460","Hillerød","Birkerød",20],
+  ["470","Hillerød","Frederikssund",26],
+  ["480","Hillerød","Ølstykke",22],
+  ["490","Hillerød","Roskilde",34],
+  ["500S","Helsingør","Nørreport",50],
+  ["530","Helsingør","Gilleleje",28],
+  ["540","Helsingør","Fredensborg",22],
+  ["550S","Helsingør","Nørreport",48],
+  ["560","Helsingør","Hillerød",26],
+  ["570","Helsingør","Frederiksværk",30],
+  ["580","Helsingør","Tisvildeleje",34],
+  ["600S","Lyngby","Nørreport",40],
+  ["610","Lyngby","Hellerup",18],
+  ["620","Lyngby","Birkerød",22],
+  ["630","Lyngby","Kgs.Lyngby",16],
+  ["640","Lyngby","Farum",20],
+  ["650","Lyngby","Hillerød",28]
 ];
 
-const total = data.length;
-const klarCount = data.filter(r => r[5] === 'SAND').length;
-const printetCount = data.filter(r => r[6] === 'SAND').length;
-const manglerCount = data.filter(r => r[5] === 'FALSK').length;
+const STORAGE_KEY = 'printforsider_state_v2';
+let isReadOnly = false;
+let currentFilter = 'all';
+let state = {};
 
-const kpiDefs = [
-  { cls:'c-alle',    label:'Linjer i alt',   value:total,        meta:'samlet',                                    pct:100,                      filter:null },
-  { cls:'c-klar',    label:'Klar til print', value:klarCount,    meta:Math.round(klarCount/total*100)+'% af alle', pct:klarCount/total*100,      filter:'klar' },
-  { cls:'c-printet', label:'Printet',         value:printetCount, meta:Math.round(printetCount/total*100)+'% klar', pct:printetCount/total*100,   filter:'printet' },
-  { cls:'c-mangler', label:'Mangler',         value:manglerCount, meta:Math.round(manglerCount/total*100)+'% af alle', pct:manglerCount/total*100,filter:'ikke-klar' },
-];
-
-const filterDefs = [
-  { key:'alle',         label:'Alle',           count:total },
-  { key:'klar',         label:'Klar til print', count:klarCount },
-  { key:'printet',      label:'Printet',        count:printetCount },
-  { key:'ikke-klar',    label:'Ikke klar',      count:manglerCount },
-  { key:'ikke-printet', label:'Ikke printet',   count:total - printetCount },
-];
-
-let activeFilter = 'alle';
-
-function initDate() {
-  document.getElementById('dato').textContent =
-    new Date().toLocaleDateString('da-DK', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+function loadFromHash() {
+  const hash = location.hash;
+  if (!hash.startsWith('#s=')) return false;
+  try {
+    const raw = decodeURIComponent(escape(atob(hash.slice(3))));
+    state = JSON.parse(raw);
+    isReadOnly = true;
+    return true;
+  } catch (_) { return false; }
 }
 
-function initKPI() {
-  const grid = document.getElementById('kpiGrid');
-  kpiDefs.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'kpi-card ' + c.cls;
-    if (c.filter) {
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', 'Filtrer: ' + c.label);
-      card.addEventListener('click', () => setFilter(c.filter));
-      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter(c.filter); } });
-    }
-
-    const lbl = document.createElement('div');
-    lbl.className = 'kpi-label';
-    lbl.textContent = c.label;
-
-    const val = document.createElement('div');
-    val.className = 'kpi-value';
-    val.textContent = c.value;
-
-    const meta = document.createElement('div');
-    meta.className = 'kpi-meta';
-    meta.textContent = c.meta;
-
-    const bar = document.createElement('div');
-    bar.className = 'kpi-bar';
-    const fill = document.createElement('div');
-    fill.className = 'kpi-bar-fill';
-    fill.style.width = '0%';
-    bar.appendChild(fill);
-
-    card.append(lbl, val, meta, bar);
-    grid.appendChild(card);
-    setTimeout(() => { fill.style.width = c.pct + '%'; }, 120);
-  });
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = JSON.parse(saved);
+  } catch (_) { state = {}; }
 }
 
-function initFilters() {
-  const group = document.getElementById('filterGroup');
-  filterDefs.forEach(f => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn' + (f.key === 'alle' ? ' active' : '');
-    btn.setAttribute('aria-pressed', String(f.key === 'alle'));
-    btn.textContent = f.label + ' (' + f.count + ')';
-    btn.addEventListener('click', () => setFilter(f.key));
-    group.appendChild(btn);
-  });
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
 }
 
-function setFilter(key) {
-  activeFilter = key;
-  document.querySelectorAll('.filter-btn').forEach((btn, i) => {
-    const on = filterDefs[i].key === key;
-    btn.classList.toggle('active', on);
-    btn.setAttribute('aria-pressed', String(on));
-  });
-  render();
+function getState(linje) {
+  return state[linje] || { k: false, p: false };
 }
 
-function makeBadge(val) {
+function toggle(linje, field) {
+  if (isReadOnly) return;
+  const s = { ...getState(linje) };
+  s[field] = !s[field];
+  if (field === 'p' && s.p) s.k = true;
+  if (field === 'k' && !s.k) s.p = false;
+  state[linje] = s;
+  saveState();
+  updateKPI();
+  updateFilterCounts();
+  updateRow(linje);
+  applyFilters();
+}
+
+function makeSvgCheck(color) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', color);
+  svg.setAttribute('stroke-width', '2.5');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('width', '16');
+  svg.setAttribute('height', '16');
+  svg.setAttribute('aria-hidden', 'true');
+  const poly = document.createElementNS(ns, 'polyline');
+  poly.setAttribute('points', '20 6 9 17 4 12');
+  svg.appendChild(poly);
+  return svg;
+}
+
+function makeSvgCircle() {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '1.5');
+  svg.setAttribute('width', '16');
+  svg.setAttribute('height', '16');
+  svg.setAttribute('aria-hidden', 'true');
+  const circle = document.createElementNS(ns, 'circle');
+  circle.setAttribute('cx', '12');
+  circle.setAttribute('cy', '12');
+  circle.setAttribute('r', '9');
+  svg.appendChild(circle);
+  return svg;
+}
+
+function makeSvgShare() {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8');
+  const polyline = document.createElementNS(ns, 'polyline');
+  polyline.setAttribute('points', '16 6 12 2 8 6');
+  const line = document.createElementNS(ns, 'line');
+  line.setAttribute('x1', '12'); line.setAttribute('y1', '2');
+  line.setAttribute('x2', '12'); line.setAttribute('y2', '15');
+  svg.appendChild(path);
+  svg.appendChild(polyline);
+  svg.appendChild(line);
+  return svg;
+}
+
+function createToggleBtn(linje, field, checked, colorClass) {
+  const btn = document.createElement('button');
+  btn.className = 'toggle-btn' + (checked ? ' ' + colorClass : '');
+  btn.setAttribute('aria-pressed', checked ? 'true' : 'false');
+  btn.setAttribute('data-linje', linje);
+  btn.setAttribute('data-field', field);
+  btn.onclick = function() { toggle(linje, field); };
+  if (checked) {
+    btn.appendChild(makeSvgCheck(colorClass === 'checked-amber' ? '#d97706' : '#16a34a'));
+  } else {
+    btn.appendChild(makeSvgCircle());
+  }
+  return btn;
+}
+
+function createStaticBadge(checked, labelYes, labelNo, colorClass) {
   const span = document.createElement('span');
-  span.className = val === 'SAND' ? 'badge badge-ja' : 'badge badge-nej';
-  const dot = document.createElement('span');
-  dot.className = 'badge-dot';
-  const txt = document.createElement('span');
-  txt.textContent = val === 'SAND' ? 'Ja' : 'Nej';
-  span.append(dot, txt);
+  span.className = 'status-badge ' + (checked ? colorClass : 'no');
+  span.textContent = checked ? labelYes : labelNo;
   return span;
 }
 
-function makeRetCell(navn, stop) {
-  const td = document.createElement('td');
-  if (!navn) {
-    const d = document.createElement('span');
-    d.style.color = '#cbd5e1';
-    d.textContent = '—';
-    td.appendChild(d);
-    return td;
+function buildRow(line) {
+  const [linje, ret1, ret2, stop] = line;
+  const s = getState(linje);
+  const tr = document.createElement('tr');
+  tr.setAttribute('data-linje', linje);
+  tr.setAttribute('data-k', s.k ? '1' : '0');
+  tr.setAttribute('data-p', s.p ? '1' : '0');
+
+  const tdLinje = document.createElement('td');
+  const badge = document.createElement('span');
+  badge.className = 'linje-badge';
+  badge.textContent = linje;
+  tdLinje.appendChild(badge);
+  tr.appendChild(tdLinje);
+
+  const tdR1 = document.createElement('td');
+  tdR1.textContent = ret1;
+  tr.appendChild(tdR1);
+
+  const tdR2 = document.createElement('td');
+  tdR2.textContent = ret2;
+  tr.appendChild(tdR2);
+
+  const tdStop = document.createElement('td');
+  tdStop.className = 'center';
+  const stopSpan = document.createElement('span');
+  stopSpan.className = 'stop-count';
+  stopSpan.textContent = stop;
+  tdStop.appendChild(stopSpan);
+  tr.appendChild(tdStop);
+
+  const tdK = document.createElement('td');
+  tdK.className = 'center';
+  if (isReadOnly) {
+    tdK.appendChild(createStaticBadge(s.k, 'Klar', 'Nej', 'yes-amber'));
+  } else {
+    tdK.appendChild(createToggleBtn(linje, 'k', s.k, 'checked-amber'));
   }
-  const name = document.createElement('span');
-  name.className = 'ret-navn';
-  name.textContent = navn;
-  td.appendChild(name);
-  if (stop) {
-    const s = document.createElement('span');
-    s.className = 'ret-stop';
-    s.textContent = stop + ' stop';
-    td.appendChild(s);
+  tr.appendChild(tdK);
+
+  const tdP = document.createElement('td');
+  tdP.className = 'center';
+  if (isReadOnly) {
+    tdP.appendChild(createStaticBadge(s.p, 'Printet', 'Nej', 'yes-green'));
+  } else {
+    tdP.appendChild(createToggleBtn(linje, 'p', s.p, 'checked-green'));
   }
-  return td;
+  tr.appendChild(tdP);
+
+  return tr;
 }
 
-function render() {
-  const q = document.getElementById('search').value.trim().toLowerCase();
+function updateRow(linje) {
+  const s = getState(linje);
+  const tr = document.querySelector('tr[data-linje="' + linje + '"]');
+  if (!tr) return;
+  tr.setAttribute('data-k', s.k ? '1' : '0');
+  tr.setAttribute('data-p', s.p ? '1' : '0');
+
+  const tds = tr.querySelectorAll('td');
+  const tdK = tds[4];
+  const tdP = tds[5];
+  tdK.replaceChildren(createToggleBtn(linje, 'k', s.k, 'checked-amber'));
+  tdP.replaceChildren(createToggleBtn(linje, 'p', s.p, 'checked-green'));
+}
+
+function updateKPI() {
+  const total = LINES.length;
+  let ready = 0, printed = 0;
+  LINES.forEach(([linje]) => {
+    const s = getState(linje);
+    if (s.k) ready++;
+    if (s.p) printed++;
+  });
+  const remaining = total - printed;
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-ready').textContent = ready;
+  document.getElementById('kpi-ready-pct').textContent = Math.round(ready/total*100) + '% af linjer';
+  document.getElementById('bar-ready').style.width = (ready/total*100) + '%';
+  document.getElementById('kpi-printed').textContent = printed;
+  document.getElementById('kpi-printed-pct').textContent = Math.round(printed/total*100) + '% færdige';
+  document.getElementById('bar-printed').style.width = (printed/total*100) + '%';
+  document.getElementById('kpi-remaining').textContent = remaining;
+}
+
+function updateFilterCounts() {
+  let all = 0, ready = 0, printed = 0, pending = 0;
+  LINES.forEach(([linje]) => {
+    const s = getState(linje);
+    all++;
+    if (s.k) ready++;
+    if (s.p) printed++;
+    if (!s.p) pending++;
+  });
+  document.getElementById('cnt-all').textContent = all;
+  document.getElementById('cnt-ready').textContent = ready;
+  document.getElementById('cnt-printed').textContent = printed;
+  document.getElementById('cnt-pending').textContent = pending;
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ['all','ready','printed','pending'].forEach(id => {
+    document.getElementById('filter-' + id).classList.toggle('active', id === f);
+  });
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('tbody tr').forEach(tr => {
+    const linje = tr.getAttribute('data-linje');
+    const k = tr.getAttribute('data-k') === '1';
+    const p = tr.getAttribute('data-p') === '1';
+    let show = true;
+    if (currentFilter === 'ready' && !k) show = false;
+    if (currentFilter === 'printed' && !p) show = false;
+    if (currentFilter === 'pending' && p) show = false;
+    if (q && !linje.toLowerCase().includes(q)) show = false;
+    tr.classList.toggle('hidden', !show);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function shareView() {
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+  const url = location.origin + location.pathname + '#s=' + payload;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('Link kopieret til udklipsholder');
+  }).catch(() => {
+    showToast('Kunne ikke kopiere — se konsol');
+    console.log(url);
+  });
+}
+
+function init() {
+  const fromHash = loadFromHash();
+  if (!fromHash) loadFromStorage();
+
   const tbody = document.getElementById('tbody');
-  tbody.replaceChildren();
-  let n = 0;
+  LINES.forEach(line => tbody.appendChild(buildRow(line)));
 
-  for (const row of data) {
-    const [linje, r1, r1s, r2, r2s, klar, printet] = row;
-    const matchSearch = !q || linje.toLowerCase().includes(q) || r1.toLowerCase().includes(q) || r2.toLowerCase().includes(q);
-    const matchFilter =
-      activeFilter === 'alle' ||
-      (activeFilter === 'klar'         && klar    === 'SAND') ||
-      (activeFilter === 'ikke-klar'    && klar    === 'FALSK') ||
-      (activeFilter === 'printet'      && printet === 'SAND') ||
-      (activeFilter === 'ikke-printet' && printet === 'FALSK');
+  updateKPI();
+  updateFilterCounts();
 
-    if (!matchSearch || !matchFilter) continue;
-    n++;
+  const shareBtn = document.getElementById('share-btn');
+  shareBtn.appendChild(makeSvgShare());
+  const label = document.createTextNode(' Del view');
+  shareBtn.appendChild(label);
 
-    const tr = document.createElement('tr');
-
-    const tdL = document.createElement('td');
-    const b = document.createElement('span');
-    b.className = 'linje-badge';
-    b.textContent = linje;
-    tdL.appendChild(b);
-    tr.appendChild(tdL);
-
-    tr.appendChild(makeRetCell(r1, r1s));
-    tr.appendChild(makeRetCell(r2, r2s));
-
-    const tdK = document.createElement('td');
-    tdK.appendChild(makeBadge(klar));
-    tr.appendChild(tdK);
-
-    const tdP = document.createElement('td');
-    tdP.appendChild(makeBadge(printet));
-    tr.appendChild(tdP);
-
-    tbody.appendChild(tr);
+  if (isReadOnly) {
+    document.getElementById('readonly-banner').style.display = 'inline-block';
+    shareBtn.style.display = 'none';
   }
-
-  if (n === 0) {
-    const tr = document.createElement('tr');
-    const td = document.createElement('td');
-    td.colSpan = 5;
-    td.className = 'empty-cell';
-    td.textContent = 'Ingen linjer matcher søgningen.';
-    tr.appendChild(td);
-    tbody.appendChild(tr);
-  }
-
-  document.getElementById('stats').textContent = n + ' af ' + data.length + ' linjer';
 }
 
-initDate();
-initKPI();
-initFilters();
-render();
+init();
 </script>
 </body>
 </html>
