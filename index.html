@@ -3,153 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Printforsider — Linjeoversigt</title>
+<title>Printforsider — Movia</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #1a1a1a; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --movia: #003865;
+    --blue: #2563EB;
+    --blue-light: #EFF6FF;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --orange: #ea580c;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-500: #64748b;
+    --gray-700: #334155;
+    --gray-900: #0f172a;
+    --text: #1e293b;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--gray-50); color: var(--text); min-height: 100vh; }
 
   header {
-    background: #003865;
-    color: white;
-    padding: 20px 32px;
-  }
-  header h1 { font-size: 1.2rem; font-weight: 600; }
-  header span { font-size: 0.85rem; opacity: 0.7; }
-
-  .toolbar {
-    padding: 16px 32px;
-    background: white;
-    border-bottom: 1px solid #e0e0e0;
+    background: var(--movia);
+    padding: 0 32px;
+    height: 60px;
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
   }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 36px; height: 36px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; color: var(--movia); }
+  .header-title { color: white; font-size: 1rem; font-weight: 600; }
+  .header-sub { color: rgba(255,255,255,0.5); font-size: 0.78rem; }
+  .header-date { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+
+  main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+
+  .kpi-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .kpi-card[role="button"] { cursor: pointer; }
+  .kpi-card[role="button"]:hover { box-shadow: var(--shadow-md); border-color: var(--gray-300); }
+  .kpi-card[role="button"]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+  .kpi-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 8px; }
+  .kpi-value { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .kpi-meta { font-size: 0.78rem; color: var(--gray-500); margin-bottom: 12px; }
+  .kpi-bar { height: 4px; background: var(--gray-100); border-radius: 2px; overflow: hidden; }
+  .kpi-bar-fill { height: 100%; border-radius: 2px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+
+  .c-alle .kpi-value { color: var(--movia); }
+  .c-alle .kpi-bar-fill { background: var(--movia); }
+  .c-klar .kpi-value { color: var(--blue); }
+  .c-klar .kpi-bar-fill { background: var(--blue); }
+  .c-printet .kpi-value { color: var(--green); }
+  .c-printet .kpi-bar-fill { background: var(--green); }
+  .c-mangler .kpi-value { color: var(--orange); }
+  .c-mangler .kpi-bar-fill { background: var(--orange); }
+
+  .panel { background: white; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--gray-200); overflow: hidden; }
+
+  .panel-toolbar {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap { position: relative; }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--gray-500); pointer-events: none; }
 
   input[type="search"] {
-    padding: 8px 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    width: 220px;
-    outline: none;
-  }
-  input[type="search"]:focus { border-color: #003865; }
-
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
-
-  button {
-    padding: 7px 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: white;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  button:hover { background: #f0f0f0; }
-  button.active { background: #003865; color: white; border-color: #003865; }
-
-  .stats {
-    margin-left: auto;
-    font-size: 0.82rem;
-    color: #666;
-    white-space: nowrap;
-  }
-
-  .container { padding: 24px 32px; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    padding: 7px 12px 7px 32px;
+    border: 1px solid var(--gray-200);
+    border-radius: 7px;
     font-size: 0.875rem;
+    font-family: inherit;
+    width: 200px;
+    outline: none;
+    background: var(--gray-50);
+    color: var(--text);
+    transition: border-color 0.15s;
   }
+  input[type="search"]:focus { border-color: var(--blue); background: white; }
 
-  thead tr { background: #f0f4f8; }
-  th {
-    text-align: left;
-    padding: 10px 14px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #555;
+  .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .filter-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    background: var(--gray-50);
+    font-size: 0.8rem;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--gray-700);
+    transition: all 0.15s;
     white-space: nowrap;
   }
+  .filter-btn:hover { background: white; border-color: var(--gray-300); }
+  .filter-btn.active { background: var(--movia); color: white; border-color: var(--movia); }
+  .filter-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
-  td { padding: 9px 14px; border-top: 1px solid #f0f0f0; vertical-align: top; }
-  tr:hover td { background: #f8fafc; }
+  .panel-stats { margin-left: auto; font-size: 0.8rem; color: var(--gray-500); white-space: nowrap; }
 
-  .linje { font-weight: 700; font-size: 1rem; color: #003865; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  thead tr { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+  th { text-align: left; padding: 10px 16px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--gray-50); }
+  td { padding: 10px 16px; vertical-align: middle; }
 
-  .retning-label {
-    font-size: 0.72rem;
-    color: #999;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    display: block;
+  .linje-badge { font-weight: 700; font-size: 0.9rem; color: var(--movia); background: #e8f0f9; padding: 3px 9px; border-radius: 5px; display: inline-block; }
+
+  .ret-navn { color: var(--gray-700); line-height: 1.4; }
+  .ret-stop { font-size: 0.72rem; color: var(--gray-500); display: block; margin-top: 2px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+  .badge-ja { background: var(--green-light); color: var(--green); }
+  .badge-nej { background: var(--red-light); color: var(--red); }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block; flex-shrink: 0; }
+
+  .empty-cell { text-align: center; padding: 60px; color: var(--gray-500); font-size: 0.9rem; }
+
+  @media (max-width: 900px) {
+    main { padding: 16px; }
+    header { padding: 0 16px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
   }
-  .retning-navn { color: #1a1a1a; display: block; line-height: 1.4; }
-  .stop-count { font-size: 0.75rem; color: #888; display: block; margin-top: 1px; }
-
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 600;
-  }
-  .badge-ja { background: #dcfce7; color: #15803d; }
-  .badge-nej { background: #fee2e2; color: #b91c1c; }
-
-  .empty {
-    text-align: center;
-    padding: 60px;
-    color: #999;
-    font-size: 0.9rem;
-    display: none;
+  @media (max-width: 500px) {
+    .kpi-grid { gap: 10px; }
+    .kpi-value { font-size: 1.6rem; }
+    input[type="search"] { width: 150px; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Printforsider — Linjeoversigt</h1>
-  <span>Movia</span>
+  <div class="header-brand">
+    <div class="logo">M</div>
+    <div>
+      <div class="header-title">Printforsider</div>
+      <div class="header-sub">Linjeoversigt</div>
+    </div>
+  </div>
+  <div class="header-date" id="dato"></div>
 </header>
 
-<div class="toolbar">
-  <input type="search" id="search" placeholder="Søg linje..." oninput="render()">
-  <div class="filters">
-    <button class="active" onclick="setFilter('alle', this)">Alle</button>
-    <button onclick="setFilter('klar', this)">Klar til print</button>
-    <button onclick="setFilter('ikke-klar', this)">Ikke klar</button>
-    <button onclick="setFilter('printet', this)">Printet</button>
-    <button onclick="setFilter('ikke-printet', this)">Ikke printet</button>
-  </div>
-  <div class="stats" id="stats"></div>
-</div>
+<main>
+  <div class="kpi-grid" id="kpiGrid"></div>
 
-<div class="container">
-  <table>
-    <thead>
-      <tr>
-        <th>Linje</th>
-        <th>Retning 1</th>
-        <th>Retning 2</th>
-        <th>Klar til print</th>
-        <th>Printet</th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
-  <div class="empty" id="empty">Ingen linjer matcher søgningen.</div>
-</div>
+  <div class="panel">
+    <div class="panel-toolbar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="search" id="search" placeholder="Søg linje..." oninput="render()" aria-label="Søg efter linje">
+      </div>
+      <div class="filter-group" id="filterGroup" role="group" aria-label="Filtrer linjer"></div>
+      <div class="panel-stats" id="stats" aria-live="polite"></div>
+    </div>
+    <table aria-label="Linjeoversigt">
+      <thead>
+        <tr>
+          <th scope="col">Linje</th>
+          <th scope="col">Retning 1</th>
+          <th scope="col">Retning 2</th>
+          <th scope="col">Klar til print</th>
+          <th scope="col">Printet</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</main>
 
 <script>
 const data = [
@@ -195,244 +243,88 @@ const data = [
   ["84","Hillerød St. - Holte St.","","Holte St. - Hillerød St.","","FALSK","FALSK"],
   ["87","København Syd St. - Solrød Strand St.","","Solrød Strand St. - København Syd St.","","FALSK","FALSK"],
   ["91N","Hillerød St. - Greve St.","","Greve St. - Hillerød St.","","FALSK","FALSK"],
-  ["93N","Roskilde St. - Rådhuspladsen St.","","Rådhuspladsen St. - Roskilde St. evt. Oldvejsparken","","FALSK","FALSK"],
+  ["93N","Roskilde St. - Rådhuspladsen St.","","Rådhuspladsen St. - Roskilde St.","","FALSK","FALSK"],
   ["94N","Hillerød St. - Rådhuspladsen St.","","Rådhuspladsen St. - Hillerød St.","","FALSK","FALSK"],
   ["98N","Roskilde St. - Frederikssund St","","Frederikssund St. - Roskilde St.","","FALSK","FALSK"],
   ["99N","Køge St. - Hårlev St.","","Hårlev St. - Køge St.","","FALSK","FALSK"],
-  ["101A","Køge Nord St. evt Campus Køge - Hastrup, Fasanvej","","Hastrup, Fasanvej - Køge Nord St. evt Campus Køge","","FALSK","FALSK"],
+  ["101A","Køge Nord St. evt Campus Køge - Hastrup, Fasanvej","","Hastrup, Fasanvej - Køge Nord St.","","FALSK","FALSK"],
   ["102A","Præstø - Køge St.","","Køge St. - Præstø","","FALSK","FALSK"],
   ["106","Køge St. - Bornholmerfærgen","","Bornholmerfærgen - Køge St.","","FALSK","FALSK"],
   ["108","Køge St.- Strøby - Køge St.","","","","FALSK","FALSK"],
   ["109","Køge St.- Strøby - Køge St.","","","","FALSK","FALSK"],
-  ["111","Spejdernes Lejr, Hedeland - Høje Taastrup St.","","Høje Taastrup St. - Spejdernes Lejr, Hedeland","","FALSK","FALSK"],
+  ["111","Spejdernes Lejr, Hedeland - Høje Taastrup St.","","Høje Taastrup St. - Spejdernes Lejr","","FALSK","FALSK"],
   ["114","Høje-Taastrup Rådhus - Sengeløse","","Sengeløse - Høje-Taastrup Rådhus","","FALSK","FALSK"],
-  ["115","Høje Taastrup St-Fløng-Hedehusene-Høje Taastrup St","","Høje Taastrup St-Fløng-Hedehusene-Høje Taastrup St","","FALSK","FALSK"],
-  ["116","Høje Taastrup St-Hedehusene-Fløng-Høje Taastrup St","","","","FALSK","FALSK"],
-  ["117","Taastrup St. - Høje Taastrup St. - Taastrup St.","","","","FALSK","FALSK"],
-  ["118","Taastrup St. - Høje Taastrup St. - Taastrup St.","","","","FALSK","FALSK"],
-  ["119","Høje Taastrup St - Litauen Alle - Høje Taastrup St","","Høje Taastrup St - Litauen Alle - Høje Taastrup St","","FALSK","FALSK"],
   ["120","Høje Taastrup St. - Karlslunde St.","","Karlslunde St. - Høje Taastup St.","","FALSK","FALSK"],
   ["121","Solrød Strand St. - Køge St.","","Køge St. - Solrød Strand St.","","FALSK","FALSK"],
   ["123","Roskilde St. - Glostrup St.","","Glostrup St. - Roskilde St.","","FALSK","FALSK"],
   ["127","Ishøj St. - Høje Taastrup St.","","Høje Taastrup St. - Ishøj St.","","FALSK","FALSK"],
-  ["128","Hedehusene St. - Ishøj St. - Arken - Ishøj St.","","Ishøj St. - Hedehusene St.","","FALSK","FALSK"],
   ["130","Vallensbæk St. - Rødovre Nord St.","","Rødovre Nord St. - Vallensbæk St.","","FALSK","FALSK"],
   ["131","Tingbjerg - Rødovre St.","","Rødovre St. - Tingbjerg","","FALSK","FALSK"],
   ["132","Friheden St. - Rødovre Centrum","","Rødovre Centrum - Friheden St.","","FALSK","FALSK"],
   ["133","Valby St. - Avedøre St.","","Avedøre St. - Valby St.","","FALSK","FALSK"],
   ["135","Brøndby Strand St. - Brøndbyvester St","","Brøndbyvester St - Brøndby Strand St.","","FALSK","FALSK"],
-  ["137","Friheden St. - Avedøre Holme - Friheden St.","","","","FALSK","FALSK"],
-  ["139","Friheden St. - Avedøre Holme - Friheden St.","","","","FALSK","FALSK"],
   ["141","Glostrup, Ejby St. - Albertslund St.","","Albertslund St. - Glostrup, Ejby St.","","FALSK","FALSK"],
   ["142","Skovlunde St. - Flintholm St.","","Flintholm St. - Skovlunde St.","","FALSK","FALSK"],
   ["143","Galgebakken - Vallensbæk St.","","Vallensbæk St. - Galgebakken","","FALSK","FALSK"],
   ["144","Ballerup St. - Vallensbæk St.","","Vallensbæk St. - Ballerup St.","","FALSK","FALSK"],
-  ["145","Skovlunde St. - Skovbyvej - Skovlunde St.","","","","FALSK","FALSK"],
-  ["147","Ballerup St. - Måløv - Smørumnedre - Ballerup St.","","","","FALSK","FALSK"],
-  ["149","Glostrup Nord, Hersted St. - Glostrup St.","","Glostrup St. - Glostrup Nord, Hersted St.","","FALSK","FALSK"],
+  ["149","Glostrup Nord, Hersted St. - Glostrup St.","","Glostrup St. - Glostrup Nord","","FALSK","FALSK"],
   ["150S","Kokkedal St. - Nørreport St.","","Nørreport St. - Kokkedal St.","","FALSK","FALSK"],
   ["151","Værløse St. - Kirke Værløse, Laanshøj","","Kirke Værløse, Laanshøj - Værløse St.","","FALSK","FALSK"],
   ["152","Måløv St. - Værløse, Ryetvej","","Værløse, Ryetvej - Måløv St.","","FALSK","FALSK"],
-  ["153","Måløv St. - Værløse, Ryetvej","","Værløse, Ryetvej - Måløv St.","","FALSK","FALSK"],
-  ["156","Ballerup St. - Magleparken - Ballerup St.","","","","FALSK","FALSK"],
-  ["157","Ballerup St. - Smørumnedre - Måløv - Ballerup St.","","","","FALSK","FALSK"],
   ["158","Måløv St. - Slangerup Rutebilstation","","Slangerup Rutebilstation - Måløv St.","","FALSK","FALSK"],
   ["160","Bagsværd St. - Tinghøjvej","","Tinghøjvej (Buddinge) - Bagsværd St.","","FALSK","FALSK"],
-  ["163","Veksø St. - Måløv St.","","Måløv St. - Veksø St.","","FALSK","FALSK"],
   ["164","Ballerup St. - Oceankaj","","Oceankaj - Ballerup St.","","FALSK","FALSK"],
   ["165","Herlev St. - Bagsværd St.","","Bagsværd St. - Herlev St.","","FALSK","FALSK"],
-  ["166","Værebroparken - Glostrup, Ejby St.","","Glostrup Ejby St. - Værebroparken","","FALSK","FALSK"],
-  ["168","Malmparken St. - Herlev St. - Peberhaven (Herlev)","","Peberhaven (Herlev) - Herlev St. - Malmparken St","","FALSK","FALSK"],
-  ["171","Hellerup St. - Gentofte - Hellerup St.","","","","FALSK","FALSK"],
-  ["172","Hellerup St. - Gentofte - Hellerup St.","","","","FALSK","FALSK"],
   ["176","Emdrup Torv - Hellerup St.","","Hellerup St. - Emdrup Torv","","FALSK","FALSK"],
   ["179","Lyngby St. - Skovshoved","","Skovshoved - Lyngby St.","","FALSK","FALSK"],
-  ["180","Lyngby St. - DTU - Lyngby St.","","","","FALSK","FALSK"],
-  ["181","DTU - Lyngby St. - DTU","","","","FALSK","FALSK"],
-  ["182","Lyngby St. - Brede - Hjortekær - Lyngby St.","","","","FALSK","FALSK"],
-  ["183","Lyngby St. - Hjortekær - Brede - Lyngby St.","","","","FALSK","FALSK"],
   ["184","Vedbæk St. - Nørreport St.","","Nørreport St. - Vedbæk St.","","FALSK","FALSK"],
   ["185","Nørreport St. - Klampenborg St.","","Klampenborg St. - Nørreport St.","","FALSK","FALSK"],
   ["191","Lyngby St. - Skodsborg St.","","Skodsborg St. - Lyngby St.","","FALSK","FALSK"],
-  ["192","Lyngby St. - Hellerup St. - Charlottenlund Fort","","Charlottenlund Fort - Hellerup St. - Lyngby St.","","FALSK","FALSK"],
-  ["193","Lyngby St. - Vedbæk St.","","Vedbæk St. - Lyngby St.","","FALSK","FALSK"],
-  ["194","Lyngby St. - Teknikerbyen","","Teknikerbyen - Lyngby St.","","FALSK","FALSK"],
-  ["196","Kajerød, Soldraget - Bistrup Trafikplads","","Bistrup Trafikplads - Kajerød, Soldraget","","FALSK","FALSK"],
-  ["197","Rude Skov Skole evt Ebberød - Birkerød St.","","Birkerød St. - Ebberød evt Rude Skov Skole","","FALSK","FALSK"],
-  ["198","Birkerød St. - Blokken - Birkerød St.","","","","FALSK","FALSK"],
   ["200S","Buddinge St. - Friheden St. evt Avedøreholmen","","Avedøreholmen evt Friheden St. - Buddinge St.","","FALSK","FALSK"],
   ["201A","Svogerslev - Trekroner St.","","Trekroner St. - Svogerslev","","FALSK","FALSK"],
-  ["202A","Margrethehåb - Musicon","","Musicon - Margrethehåb","","FALSK","FALSK"],
-  ["203","Roskilde St. - Veddelev","","Veddelev - Roskilde St.","","FALSK","FALSK"],
-  ["205","Neergårdsparken - Roskilde St.","","Roskilde St. - Neergårdsparken","","FALSK","FALSK"],
-  ["206","Roskilde St. - Gartnervang","","Gartnervang - Roskilde St.","","FALSK","FALSK"],
-  ["207","Osted - Roskilde St.","","Roskilde St. - Osted","","FALSK","FALSK"],
-  ["209","Roskilde St. - Trekroner Plejecenter","","Trekroner Plejecenter - Roskilde St.","","FALSK","FALSK"],
-  ["212","Hastrup - Roskilde St.","","Roskilde St. - Hastrup","","FALSK","FALSK"],
-  ["215","Hvalsø St. - Solrød Strand St.","","Solrød Strand St. - Hvalsø St.","","FALSK","FALSK"],
   ["216","Roskilde St. - Ballerup St.","","Ballerup St. - Roskilde St.","","FALSK","FALSK"],
-  ["217","Jyllingecentret - Veksø St.","","Veksø St. - Jyllingecentret","","FALSK","FALSK"],
-  ["219","Kirke Hyllinge - Hvalsø St.","","Hvalsø St. - Kirke Hyllinge","","FALSK","FALSK"],
-  ["220","Solrød Strand St. - Trekroner Øst","","Trekroner Øst - Solrød Strand St.","","FALSK","FALSK"],
-  ["221","Kirke Hyllinge - Lyndby","","Lyndby - Kirke Hyllinge","","FALSK","FALSK"],
-  ["222","Spejdernes Lejr, Hedeland - Roskilde St.","","Roskilde St. - Spejdernes Lejr, Hedeland","","FALSK","FALSK"],
-  ["223","Kirke Hyllinge - Gershøj - Kirke Hyllinge","","Kirke Hyllinge - Gershøj - Kirke Hyllinge","","FALSK","FALSK"],
-  ["224","Hundige St. - Hedehusene St.","","Hedehusene St. - Hundige St.","","FALSK","FALSK"],
-  ["225","Ishøj St. - Karlslunde St.","","Karlsunde St. - Ishøj St.","","FALSK","FALSK"],
-  ["226","Skibby - Roskilde St.","","Roskilde St. - Skibby","","FALSK","FALSK"],
-  ["227","Kirke Hyllinge - Roskilde St.","","","","FALSK","FALSK"],
-  ["228","Holbæk St. - Kr. Hyllinge","","Kr. Hyllinge - Holbæk St.","","FALSK","FALSK"],
   ["230R","Frederikssund St. - Roskilde St.","","Roskilde St. - Frederikssund St.","","FALSK","FALSK"],
-  ["231","Kirke Hyllinge - Roskilde St.","","Roskilde St. - Kirke Hyllinge","","FALSK","FALSK"],
-  ["233","Lejre St. - Sagnlandet","","Sagnlandet - Lejre St.","","FALSK","FALSK"],
-  ["236","Rye - Hvalsø St.","","Hvalsø St. - Rye","","FALSK","FALSK"],
   ["240R","Ringsted St. - Roskilde St.","","Roskilde St. - Ringsted St.","","FALSK","FALSK"],
-  ["241","Køge St.- Herfølge skole","","Herfølge skole - Køge St.","","FALSK","FALSK"],
-  ["242","Ølby St. - Ejby","","Ejby - Ølby St.","","FALSK","FALSK"],
-  ["243","Borup St.- Lammestrup - Borup St.","","","","FALSK","FALSK"],
-  ["244","Bjæverskov - Slimminge - Bjæverskov.","","","","FALSK","FALSK"],
   ["245R","Køge St. - Borup St.","","Borup St. - Køge St.","","FALSK","FALSK"],
-  ["246","Borup St. - Solrød Strand St.","","Solrød Strand St. - Borup St.","","FALSK","FALSK"],
   ["250S","Dragør Stationsplads - Bagsværd St.","","Bagsværd St. - Dragør Stationsplads","","FALSK","FALSK"],
-  ["251","Køge - Mandehoved","","Mandehoved - Køge St.","","FALSK","FALSK"],
-  ["252","Hårlev St. - St.Heddinge St","","St.Heddinge St. - Hårlev St.","","FALSK","FALSK"],
-  ["253","Hårlev St. - Strøby Egede - Hårlev St.","","Hårlev St. - Strøby Egede - Hårlev St.","","FALSK","FALSK"],
-  ["254","Køge St. - Hårlev St.","","Hårlev St. - Køge St.","","FALSK","FALSK"],
   ["260R","Køge St. - Ringsted St.","","Ringsted St. - Køge St.","","FALSK","FALSK"],
-  ["261","Faxe Bystation - Faxe syd St. - Faxe Bystation","","","","FALSK","FALSK"],
-  ["262","Haslev St.","","","","FALSK","FALSK"],
-  ["263","Faxe Bystation. - Haslev St.","","Haslev St. - Faxe Bystation","","FALSK","FALSK"],
-  ["264","Haslev St. - Karise St.","","Karise St. - Haslev St.","","FALSK","FALSK"],
-  ["265","Haslev St. - Terslev - Haslev St.","","Haslev St. - Terslev - Haslev St.","","FALSK","FALSK"],
-  ["266","Haslev St. - Teestrup - Haslev St.","","Haslev St. - Teestrup - Haslev St.","","FALSK","FALSK"],
-  ["267","Nærbus","","","","FALSK","FALSK"],
-  ["271","Strøby Skolen - Sigerslev","","Sigerslev - Strøby Skolen","","FALSK","FALSK"],
-  ["272","St. Heddinge Skole - Råby","","Råby - St. Heddinge Skole","","FALSK","FALSK"],
-  ["273","Frøslev - St. Heddinge Skole","","St. Heddinge Skole - Frøslev","","FALSK","FALSK"],
-  ["274","Sønderbyvej - Hotherskolen","","Hotherskolen - Sønderbyvej","","FALSK","FALSK"],
-  ["275","Hårlev St. - Hotherskolen","","Hotherskolen - Hårlev St.","","FALSK","FALSK"],
-  ["287","Faxe Bystation - Strandholm, Mosebølle","","Strandholm, Mosebølle - Faxe Bystation","","FALSK","FALSK"],
-  ["300S","Lundtofte, Lundtofteparken - Rødovre Nord St.","","Rødovre Nord St. - Lundtofte, Lundtofteparken","","FALSK","FALSK"],
-  ["301","Ullerød, Ålhomparken - Kongens Vænge, ATP-huset","","Kongens Vænge, ATP-huset - Ullerød, Ålholmparken","","FALSK","FALSK"],
-  ["302","Sophienlund - Egedammen","","Egedammen - Sophienlund","","FALSK","FALSK"],
-  ["303","Hillerød St. - Frederiksborg Slot - Hillerød St.","","Hillerød St. - Slotspavillonen - Hillerød St.","","FALSK","FALSK"],
-  ["305","Hillerød St. - U/NORD Hillerød - Hillerød St.","","","","FALSK","FALSK"],
-  ["307","Hillerød St. - Nødebo Skovskole","","Nødebo Skovskole - Hillerød St.","","FALSK","FALSK"],
-  ["308","Grønnevang Skole - Skovskolen","","Jægervænget - Skovskolen - Grønnevang Skole","","FALSK","FALSK"],
+  ["300S","Lundtofte, Lundtofteparken - Rødovre Nord St.","","Rødovre Nord St. - Lundtofte","","FALSK","FALSK"],
   ["310R","Frederikssund St. - Farum St.","","Farum St. - Frederikssund St.","","FALSK","FALSK"],
-  ["311","Græse Bakkeby - Haldor Topsøe Park","","Haldor Topsøe Park - Græse Bakkeby","","FALSK","FALSK"],
-  ["312","Frederikssund St. - Egedal St.","","Egedal St. - Frederikssund St.","","FALSK","FALSK"],
-  ["313","Kyndby Huse - Jægerspris - Frederikssund St.","","Frederikssund St. - Jægerspris - Kyndby Huse","","FALSK","FALSK"],
-  ["314","Egedal St. - Egedal St.","","","","FALSK","FALSK"],
-  ["315","Frederikssund St. - Lyngerup - Skibby","","Skibby - Lyngerup - Frederikssund St.","","FALSK","FALSK"],
-  ["316","Frederikssund St. - Kulhuse","","Kulhuse - Frederikssund St.","","FALSK","FALSK"],
-  ["317","Jægerspris - Dalby","","Dalby - Jægerspris","","FALSK","FALSK"],
-  ["318","Frederikssund St. - Skibby","","Skibby - Frederikssund St.","","FALSK","FALSK"],
-  ["319","Skibby - Vinge St.","","Vinge St. - Skibby","","FALSK","FALSK"],
   ["320R","Helsinge St. - Frederikssund St.","","Frederikssund St. - Helsinge St.","","FALSK","FALSK"],
-  ["321","Brødeskov - Freerslev - Gørløse - Uvelse","","","","FALSK","FALSK"],
-  ["322","Meløse - Ll. Lyngby - Store Lyngby - Skævinge St.","","","","FALSK","FALSK"],
-  ["323","Skævinge St. - Strø - Sigerslevøster - Gørløse","","Gørløse - Sigerslevøster - Strø - Skævinge St.","","FALSK","FALSK"],
   ["325","Frederikssund St. - Hillerød St.","","Hillerød St. - Frederikssund St.","","FALSK","FALSK"],
   ["326","Hillerød St. - Hundested St.","","Hundested St. - Hillerød St.","","FALSK","FALSK"],
-  ["327","Frederiksværk - Liseleje - Melby","","Melby - Liseleje - Frederiksværk","","FALSK","FALSK"],
-  ["330R","Rungsted Kyst St. Øst - Allerød, Rønneholtparken","","Allerød, Rønneholtparken - Rungsted Kyst St. Øst","","FALSK","FALSK"],
-  ["332","Farum St. - Lynghomskolen - Farum St.","","","","FALSK","FALSK"],
-  ["333","Farum Kaserne","","Farum St.","","FALSK","FALSK"],
-  ["334","Holte St. - Stenløse St.","","Stenløse St. - Holte St.","","FALSK","FALSK"],
+  ["330R","Rungsted Kyst St. Øst - Allerød","","Allerød - Rungsted Kyst St. Øst","","FALSK","FALSK"],
   ["335","Hillerød St. - Farum St.","","Farum St. - Hillerød St.","","FALSK","FALSK"],
-  ["336","Lynge - Enghaven Nord","","Enghaven Nord - Lynge","","FALSK","FALSK"],
   ["337","Hillerød St. - Slangerup Rutebilstation","","Slangerup Rutebilstation - Hillerød St.","","FALSK","FALSK"],
   ["340","Espergærde St. - Hornbæk St.","","Hornbæk St. - Espergærde St.","","FALSK","FALSK"],
   ["341","Helsingør St.- Hornbæk St.","","Hornbæk St.- Helsingør St.","","FALSK","FALSK"],
-  ["345","Espergærde St. - Ålsgårde St.","","Ålsgårde St. - Espergærde St.","","FALSK","FALSK"],
-  ["347","Helsingør St. - Hornbæk St.","","Hornbæk St. - Helsingør St.","","FALSK","FALSK"],
   ["350S","Ballerup St. - Nørreport St.","","Nørreport St. - Ballerup St.","","FALSK","FALSK"],
-  ["353","Kokkedal St. - Hellebo Park","","Hellebo Park - Kokkedal St.","","FALSK","FALSK"],
-  ["354","Holte St. - Nivå St., ved centret","","Nivå St., ved centret - Holte St.","","FALSK","FALSK"],
-  ["355R","Kokkedal St. - Hellebo Park","","Hellebo Park - Kokkedal St.","","FALSK","FALSK"],
-  ["358","Roskilde St. - Stenløse St.","","Stenløse St. - Roskilde St.","","FALSK","FALSK"],
   ["360R","Gilleleje St - Helsinge St.","","Helsinge St. - Gilleleje St.","","FALSK","FALSK"],
-  ["361","Tisvildeleje St. - Helsinge St.","","Helsinge St. - Tisvildeleje St.","","FALSK","FALSK"],
-  ["362","Græsted Syd St. - Mårum Skov og Naturbørnehave","","Mårum Skov og Naturbørnehave - Græsted Syd St.","","FALSK","FALSK"],
-  ["363","Helsinge St. - Gilleleje St.","","Gilleleje St. - Helsinge St.","","FALSK","FALSK"],
   ["365R","Kokkedal St. - Fredensborg St.","","Fredensborg St. - Kokkedal St.","","FALSK","FALSK"],
   ["370R","Fredensborg St. - Dageløkkeparken","","Dageløkkeparken - Fredensborg St.","","FALSK","FALSK"],
-  ["374","Skolebus Fredensborg kommune","","Skolebus Fredensborg kommune","","FALSK","FALSK"],
-  ["375R","Hørsholm Hallen - Hillerød St. / Favrholm St.","","Hillerød St. / Favrholm St. - Hørsholm Hallen","","FALSK","FALSK"],
+  ["375R","Hørsholm Hallen - Hillerød St.","","Hillerød St. - Hørsholm Hallen","","FALSK","FALSK"],
   ["380R","Helsinge St. - Hillerød St.","","Hillerød St. - Helsinge St.","","FALSK","FALSK"],
   ["385","Holte St. - Allerød St.","","Allerød St. - Holte St.","","FALSK","FALSK"],
-  ["386","Mikkelborg Park - Rungsted Kyst St., Øst","","Rungsted Kyst St., Øst - Mikkelborg Park","","FALSK","FALSK"],
-  ["388","Lyngby St. - Helsingør St. evt. Taarbæk Havn","","Helsingør St. evt Taarbæk Havn - Lyngby St.","","FALSK","FALSK"],
+  ["388","Lyngby St. - Helsingør St.","","Helsingør St. - Lyngby St.","","FALSK","FALSK"],
   ["390R","Helsingør St. - Helsinge St.","","Helsinge St. - Helsingør St.","","FALSK","FALSK"],
   ["400S","Lyngby St. - Ishøj St.","","Ishøj St. - Lyngby St.","","FALSK","FALSK"],
-  ["401A","Benløseparken Øst - Campus","","Campus - Benløseparken Øst","","FALSK","FALSK"],
-  ["402","Ringsted St. - Kildemarken - Ringsted St.","","","","FALSK","FALSK"],
-  ["404","Ringsted St- Bjergbakken - Tværalle - Ringsted St","","","","FALSK","FALSK"],
-  ["405","Ringsted St.- Kærup-Kaserne Parkvej - Ringsted St.","","Ringsted St.- Kaserne Parkvej-Kærup - Ringsted St","","FALSK","FALSK"],
-  ["406","Ringsted St. - Gyrstinge","","Gyrstinge - Ringsted St.","","FALSK","FALSK"],
-  ["408","Ringsted St. - Borup St.","","Borup St. - Ringsted St.","","FALSK","FALSK"],
-  ["411","Ringsted St. - Ørslev","","Ørslev - Ringsted St.","","FALSK","FALSK"],
-  ["415","Ringsted St. - Allindelille","","Allindelille - Ringsted St.","","FALSK","FALSK"],
   ["420","Holbæk St. - Slagelse St.","","Slagelse St. - Holbæk St.","","FALSK","FALSK"],
-  ["421","Smedeparken - Katrinelyst","","Katrinelyst - Smedeparken","","FALSK","FALSK"],
-  ["425","Sorø St. - Stenlille St.","","Stenlille St. - Sorø St.","","FALSK","FALSK"],
   ["430R","Kalundborg St. - Slagelse St.","","Slagelse St. - Kalundborg St.","","FALSK","FALSK"],
-  ["431","Slagelse St. - Dalmose Terminal","","Dalmose Terminal - Slagelse St.","","FALSK","FALSK"],
-  ["432","Slagelse St. - Reersø Havn","","Reersø Havn - Slagelse St.","","FALSK","FALSK"],
-  ["437","Slagelse St. - Nordrup - Slagelse St.","","Slagelse St. - Sønderup - Slagelse St.","","FALSK","FALSK"],
-  ["439","Slagelse St. - Stillinge skole","","Stillinge skole - Slagelse St.","","FALSK","FALSK"],
   ["440R","Ringsted St. - Haslev St.","","Haslev St. - Ringsted St.","","FALSK","FALSK"],
   ["460R","Ringsted St. - Slagelse St.","","Slagelse St. - Ringsted St","","FALSK","FALSK"],
-  ["462","Skælskør Busterm.-Glænø-Ørslev-Skælskør Busterm.","","","","FALSK","FALSK"],
-  ["465","Skee - Benløse","","Benløse - Skee","","FALSK","FALSK"],
-  ["466","Ringsted St. - Ørslev","","Ørslev - Ringsted St.","","FALSK","FALSK"],
-  ["467","Vigersted - Jystrup - Vigersted","","Vigersted - Skjoldnæsholm - Vigersted","","FALSK","FALSK"],
-  ["468","Vigersted - Jystrup - Ortved - Vigersted","","Vigersted - Ortved - Jystrup - Vigersted","","FALSK","FALSK"],
-  ["469","Ringsted St. - Vetterslev - Ringsted St.","","Ringsted St. - Sigersted - Ringsted St.","","FALSK","FALSK"],
-  ["470R","Slagelse St. - Skælskør Busterminal","","Skælskør Busterminal - Slagelse St.","","FALSK","FALSK"],
   ["480R","Slagelse St. - Næstved St.","","Næstved St. - Slagelse St.","","FALSK","FALSK"],
-  ["490","Ruds Vedby St. - Svinninge St.","","Svinninge St. - Ruds Vedby St.","","FALSK","FALSK"],
-  ["494","Nymarkskolen - Ottestrup - Nymarkskolen","","","","FALSK","FALSK"],
-  ["495","Skælskør Busterm. - Boeslunde - Skælskør Busterm.","","","","FALSK","FALSK"],
-  ["496","Harrested - Slots Bjergby - Halkevad - Flakkebjerg","","Flakkebjerg - Halkevad - Slots Bjergby - Harrested","","FALSK","FALSK"],
-  ["497","Dalmose Term.-Sdr.Bjerge-Eggeslevm.-DalmoseTerm.","","Dalmose Term.-Eggeslevm.-Dalmose Term.","","FALSK","FALSK"],
   ["500S","Kokkedal St. - Ørestad St.","","Ørestad St. - Kokkedal St.","","FALSK","FALSK"],
-  ["501A","Højvang - Ladegårdsparken, Vandtårnsstien","","Ladegårdsparken, Vandtårnsstien - Højvang","","FALSK","FALSK"],
-  ["502","Frejasvej - Campingpladsen","","Campingpladsen - Frejasvej","","FALSK","FALSK"],
-  ["504","Vipperødhallen - Holbæk St.","","Holbæk St. - Vipperødhallen","","FALSK","FALSK"],
-  ["505","Holbæk St. - Udby - Holbæk St.","","","","FALSK","FALSK"],
-  ["506","Gurede - Holbæk St.","","Tuse - Udby - Tuse","","FALSK","FALSK"],
-  ["511","Hvalsø - Ugerløse","","Ugerløse - Hvalsø","","FALSK","FALSK"],
-  ["512","Svinninge St. - Jyderup St.","","Jyderup St. - Svinninge St.","","FALSK","FALSK"],
   ["520","Holbæk St. - Kalundborg St.","","Kalundborg St. - Holbæk St.","","FALSK","FALSK"],
-  ["530","Holbæk St. - Tølløse St.","","Tølløse St. - Holbæk St.","","FALSK","FALSK"],
   ["540","Holbæk St. - Ringsted St.","","Ringsted St. - Holbæk St.","","FALSK","FALSK"],
-  ["541","Jyderup St. - Havnsø Havn","","Havnsø Havn - Jyderup St.","","FALSK","FALSK"],
-  ["542","Jyderup St. - Kaldred - Jyderup St.","","Jyderup St. - Eskebjerg - Jyderup St.","","FALSK","FALSK"],
-  ["543","Kalundborg St. - Hørve St.","","Hørve St. - Kalundborg St.","","FALSK","FALSK"],
-  ["544","Firhøjskolen - Svebølle St.","","Svebølle St. - Firhøjskolen","","FALSK","FALSK"],
-  ["545","Kalundborg St. - Høng St.","","Høng St. - Kalundborg St.","","FALSK","FALSK"],
-  ["551","Kalundborg St. - Spangsbro - Kalundborg St.","","","","FALSK","FALSK"],
-  ["552","Kalundborg St. - Raklev Skole - Kalundborg St.","","","","FALSK","FALSK"],
-  ["553","Kalundborg St. - Bjørnstrup","","Bjørnstrup - Kalundborg St.","","FALSK","FALSK"],
-  ["554","Kalundborg St. - Kystskoven - Kalundborg St.","","","","FALSK","FALSK"],
   ["560","Nykøbing Sj. St. - Holbæk St.","","Holbæk St. - Nykøbing Sj. St.","","FALSK","FALSK"],
-  ["561","Nykøbing Sj. St. - Odden Færgehavn, Gniben","","Odden Færgehavn, Gniben - Nykøbing Sj. St.","","FALSK","FALSK"],
-  ["562","Nykøbing Sj. St. - Rørvig - Nykøbing Sj. St.","","","","FALSK","FALSK"],
-  ["563","Nykøbing Sj. St. - Højby St.","","Højby St. - Nykøbing Sj. St.","","FALSK","FALSK"],
-  ["565","Asnæs St. - Nykøbing Sj. St.","","Nykøbing Sj. St. - Asnæs St.","","FALSK","FALSK"],
-  ["566","Asnæs St. - Nykøbing Sj. St.","","Nykøbing Sj. St. - Asnæs St.","","FALSK","FALSK"],
-  ["568","Asnæs - Fårevejle St. - Asnæs - evt Sydskolen","","","","FALSK","FALSK"],
-  ["570","Dianalund St. - Næstved St.","","Næstved St. - Dianalund St.","","FALSK","FALSK"],
   ["600S","Hillerød St. - Ishøj St.","","Ishøj St. - Hillerød St.","","FALSK","FALSK"],
+  ["620R","Næstved St. - Præstø","","Præstø - Næstved St.","","FALSK","FALSK"],
+  ["630R","Næstved St. - Faxe Ladeplads","","Faxe Ladeplads - Næstved St.","","FALSK","FALSK"],
   ["640","Næstved St. - Vordingborg St.","","Vordingborg St. - Næstved St.","","FALSK","FALSK"],
   ["660R","Vordingborg St. - Stege","","Stege - Vordingborg St.","","FALSK","FALSK"],
-  ["666","København H - Copenhell","","Copenhell - København H","","FALSK","FALSK"],
-  ["700","Nykøbing F St. - diverse","","diverse - Nykøbing F St.","","FALSK","FALSK"],
+  ["680R","Næstved - Ringsted St.","","Ringsted - Næstved","","FALSK","FALSK"],
   ["720R","Maribo St. - Rødby Færge","","Rødby Færge - Maribo St.","","FALSK","FALSK"],
   ["750","Stege - Nykøbing F St.","","Nykøbing F St. - Stege","","FALSK","FALSK"],
-  ["800S","diverse","","diverse","","FALSK","FALSK"],
   ["961","Lilla Fribus Slagelse","","Lilla Fribus Slagelse","","FALSK","FALSK"],
   ["962","Blå Fribus Slagelse","","Blå Fribus Slagelse","","FALSK","FALSK"],
   ["963","Rød Fribus Slagelse","","Rød Fribus Slagelse","","FALSK","FALSK"],
@@ -442,35 +334,120 @@ const data = [
   ["993","Nyhavn - Operaen","","Operaen - Nyhavn","","FALSK","FALSK"],
 ];
 
+const total = data.length;
+const klarCount = data.filter(r => r[5] === 'SAND').length;
+const printetCount = data.filter(r => r[6] === 'SAND').length;
+const manglerCount = data.filter(r => r[5] === 'FALSK').length;
+
+const kpiDefs = [
+  { cls:'c-alle',    label:'Linjer i alt',   value:total,        meta:'samlet',                                    pct:100,                      filter:null },
+  { cls:'c-klar',    label:'Klar til print', value:klarCount,    meta:Math.round(klarCount/total*100)+'% af alle', pct:klarCount/total*100,      filter:'klar' },
+  { cls:'c-printet', label:'Printet',         value:printetCount, meta:Math.round(printetCount/total*100)+'% klar', pct:printetCount/total*100,   filter:'printet' },
+  { cls:'c-mangler', label:'Mangler',         value:manglerCount, meta:Math.round(manglerCount/total*100)+'% af alle', pct:manglerCount/total*100,filter:'ikke-klar' },
+];
+
+const filterDefs = [
+  { key:'alle',         label:'Alle',           count:total },
+  { key:'klar',         label:'Klar til print', count:klarCount },
+  { key:'printet',      label:'Printet',        count:printetCount },
+  { key:'ikke-klar',    label:'Ikke klar',      count:manglerCount },
+  { key:'ikke-printet', label:'Ikke printet',   count:total - printetCount },
+];
+
 let activeFilter = 'alle';
+
+function initDate() {
+  document.getElementById('dato').textContent =
+    new Date().toLocaleDateString('da-DK', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+}
+
+function initKPI() {
+  const grid = document.getElementById('kpiGrid');
+  kpiDefs.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'kpi-card ' + c.cls;
+    if (c.filter) {
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', 'Filtrer: ' + c.label);
+      card.addEventListener('click', () => setFilter(c.filter));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter(c.filter); } });
+    }
+
+    const lbl = document.createElement('div');
+    lbl.className = 'kpi-label';
+    lbl.textContent = c.label;
+
+    const val = document.createElement('div');
+    val.className = 'kpi-value';
+    val.textContent = c.value;
+
+    const meta = document.createElement('div');
+    meta.className = 'kpi-meta';
+    meta.textContent = c.meta;
+
+    const bar = document.createElement('div');
+    bar.className = 'kpi-bar';
+    const fill = document.createElement('div');
+    fill.className = 'kpi-bar-fill';
+    fill.style.width = '0%';
+    bar.appendChild(fill);
+
+    card.append(lbl, val, meta, bar);
+    grid.appendChild(card);
+    setTimeout(() => { fill.style.width = c.pct + '%'; }, 120);
+  });
+}
+
+function initFilters() {
+  const group = document.getElementById('filterGroup');
+  filterDefs.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (f.key === 'alle' ? ' active' : '');
+    btn.setAttribute('aria-pressed', String(f.key === 'alle'));
+    btn.textContent = f.label + ' (' + f.count + ')';
+    btn.addEventListener('click', () => setFilter(f.key));
+    group.appendChild(btn);
+  });
+}
+
+function setFilter(key) {
+  activeFilter = key;
+  document.querySelectorAll('.filter-btn').forEach((btn, i) => {
+    const on = filterDefs[i].key === key;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', String(on));
+  });
+  render();
+}
 
 function makeBadge(val) {
   const span = document.createElement('span');
   span.className = val === 'SAND' ? 'badge badge-ja' : 'badge badge-nej';
-  span.textContent = val === 'SAND' ? 'Ja' : 'Nej';
+  const dot = document.createElement('span');
+  dot.className = 'badge-dot';
+  const txt = document.createElement('span');
+  txt.textContent = val === 'SAND' ? 'Ja' : 'Nej';
+  span.append(dot, txt);
   return span;
 }
 
-function makeRetningCell(navn, stop) {
+function makeRetCell(navn, stop) {
   const td = document.createElement('td');
   if (!navn) {
-    const dash = document.createElement('span');
-    dash.style.color = '#ccc';
-    dash.textContent = '—';
-    td.appendChild(dash);
+    const d = document.createElement('span');
+    d.style.color = '#cbd5e1';
+    d.textContent = '—';
+    td.appendChild(d);
     return td;
   }
-  const label = document.createElement('span');
-  label.className = 'retning-label';
-  label.textContent = 'Ret.';
   const name = document.createElement('span');
-  name.className = 'retning-navn';
+  name.className = 'ret-navn';
   name.textContent = navn;
-  td.appendChild(label);
   td.appendChild(name);
   if (stop) {
     const s = document.createElement('span');
-    s.className = 'stop-count';
+    s.className = 'ret-stop';
     s.textContent = stop + ' stop';
     td.appendChild(s);
   }
@@ -478,65 +455,63 @@ function makeRetningCell(navn, stop) {
 }
 
 function render() {
-  const search = document.getElementById('search').value.trim().toLowerCase();
+  const q = document.getElementById('search').value.trim().toLowerCase();
   const tbody = document.getElementById('tbody');
-  const empty = document.getElementById('empty');
-
   tbody.replaceChildren();
-  let visible = 0;
+  let n = 0;
 
   for (const row of data) {
-    const [linje, r1navn, r1stop, r2navn, r2stop, klar, printet] = row;
-
-    const matchSearch = !search
-      || linje.toLowerCase().includes(search)
-      || r1navn.toLowerCase().includes(search)
-      || r2navn.toLowerCase().includes(search);
-
+    const [linje, r1, r1s, r2, r2s, klar, printet] = row;
+    const matchSearch = !q || linje.toLowerCase().includes(q) || r1.toLowerCase().includes(q) || r2.toLowerCase().includes(q);
     const matchFilter =
       activeFilter === 'alle' ||
-      (activeFilter === 'klar' && klar === 'SAND') ||
-      (activeFilter === 'ikke-klar' && klar === 'FALSK') ||
-      (activeFilter === 'printet' && printet === 'SAND') ||
+      (activeFilter === 'klar'         && klar    === 'SAND') ||
+      (activeFilter === 'ikke-klar'    && klar    === 'FALSK') ||
+      (activeFilter === 'printet'      && printet === 'SAND') ||
       (activeFilter === 'ikke-printet' && printet === 'FALSK');
 
     if (!matchSearch || !matchFilter) continue;
-    visible++;
+    n++;
 
     const tr = document.createElement('tr');
 
-    const tdLinje = document.createElement('td');
-    const linjeSpan = document.createElement('span');
-    linjeSpan.className = 'linje';
-    linjeSpan.textContent = linje;
-    tdLinje.appendChild(linjeSpan);
-    tr.appendChild(tdLinje);
+    const tdL = document.createElement('td');
+    const b = document.createElement('span');
+    b.className = 'linje-badge';
+    b.textContent = linje;
+    tdL.appendChild(b);
+    tr.appendChild(tdL);
 
-    tr.appendChild(makeRetningCell(r1navn, r1stop));
-    tr.appendChild(makeRetningCell(r2navn, r2stop));
+    tr.appendChild(makeRetCell(r1, r1s));
+    tr.appendChild(makeRetCell(r2, r2s));
 
-    const tdKlar = document.createElement('td');
-    tdKlar.appendChild(makeBadge(klar));
-    tr.appendChild(tdKlar);
+    const tdK = document.createElement('td');
+    tdK.appendChild(makeBadge(klar));
+    tr.appendChild(tdK);
 
-    const tdPrintet = document.createElement('td');
-    tdPrintet.appendChild(makeBadge(printet));
-    tr.appendChild(tdPrintet);
+    const tdP = document.createElement('td');
+    tdP.appendChild(makeBadge(printet));
+    tr.appendChild(tdP);
 
     tbody.appendChild(tr);
   }
 
-  empty.style.display = visible === 0 ? 'block' : 'none';
-  document.getElementById('stats').textContent = 'Viser ' + visible + ' af ' + data.length + ' linjer';
+  if (n === 0) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = 5;
+    td.className = 'empty-cell';
+    td.textContent = 'Ingen linjer matcher søgningen.';
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('stats').textContent = n + ' af ' + data.length + ' linjer';
 }
 
-function setFilter(f, btn) {
-  activeFilter = f;
-  document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-
+initDate();
+initKPI();
+initFilters();
 render();
 </script>
 </body>
